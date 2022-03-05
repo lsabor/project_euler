@@ -1,0 +1,11 @@
+#
+# Made with
+# python 3.10.0 - subject updating with new python versions
+# 
+# problem files are in jupyter notebook style
+# check each problem for unique requirements
+#
+
+jupyter
+numpy
+

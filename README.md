@@ -1,4 +1,4 @@
-# projecteuler_solutions
+# project_euler
 Solution code to the problem bank from https://projecteuler.net/
 
 Author:
@@ -11,7 +11,7 @@ Uses Python 3.10.0 or later
 The intention is to proceed through problems 1-100 from archives https://projecteuler.net/archives/ in order. That may be subject to change.
 
 File Structure:
-/projecteuler_solutions
+/project_euler
     README.md
     requirements.txt
     /modules/

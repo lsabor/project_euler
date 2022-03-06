@@ -30,7 +30,7 @@ def next_prime(n: Number) -> int:
 
 def prime_factorization(n: int) -> list:
     # returns the prime factorization of an int
-    # e.g. 28 -> [2,2,7]
+    # e.g. 28 -> Counter({2:2,7:1})
     if n - int(n) != 0:
         raise Exception(f'cannot prime factorize {n} - not a whole number')
     factors = []

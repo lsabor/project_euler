@@ -49,21 +49,22 @@ class Sequence:
     def display(self):
         print(self.seq)
 
-    def next(self):
-        return self.next_item()
+    def nexts(self):
+        return self.next_item_batch()
 
-    def add_item(self):
-        nxt = self.next()
-        self.seq.append(nxt)
+    def add_items(self):
+        nxts = self.nexts()
+        self.seq += nxts
         self.update_cache()
-        return nxt
+        return nxts
 
     def extend_seq(self,n: int):
-        for i in range(n):
-            self.add_item()
+        while n > 0:
+            added = self.add_items()
+            n -= len(added)
         return self
 
-    def take_while(self,include_condition,last_index=1000) -> list:
+    def take_while(self,include_condition,last_index=200000) -> list:
         passing = []
         length = 0
         while length < last_index:
@@ -75,14 +76,14 @@ class Sequence:
                 return passing
         raise Exception(f'Sequence {self.name} satisfies {include_condition} past {last_index=}')
 
-    def take_while_lt(self,n: float) -> list:
-        return self.take_while(lambda x: x< n)
-    def take_while_gt(self,n: float) -> list:
-        return self.take_while(lambda x: x> n)
-    def take_while_le(self,n: float) -> list:
-        return self.take_while(lambda x: x<=n)
-    def take_while_ge(self,n: float) -> list:
-        return self.take_while(lambda x: x>=n)
+    def take_while_lt(self,n: float,last_index=1000) -> list:
+        return self.take_while(lambda x: x< n,last_index=last_index)
+    def take_while_gt(self,n: float,last_index=1000) -> list:
+        return self.take_while(lambda x: x> n,last_index=last_index)
+    def take_while_le(self,n: float,last_index=1000) -> list:
+        return self.take_while(lambda x: x<=n,last_index=last_index)
+    def take_while_ge(self,n: float,last_index=1000) -> list:
+        return self.take_while(lambda x: x>=n,last_index=last_index)
 
 class Primes(Sequence):
     def __init__(self,n=1):
@@ -90,24 +91,28 @@ class Primes(Sequence):
         self.starter_seq = [2]
         super().__init__(n)
     def next_item(self):
+        return self.next_item_batch[0]     
+    def next_item_batch(self):
         current = self.seq[-1]
-        possibles = range(current,2*current+1)
+        primes = range(current,2*current+1)
         for p in self.seq:
-            possibles = [x for x in possibles if x%p != 0]
-        return possibles[0]       
+            primes = [x for x in primes if x%p != 0]
+        print(f'Adding primes between {primes[0]} and {primes[-1]}')
+        return primes
+
 
 class Fibonacci(Sequence):
     def __init__(self,n=2):
         self.name = 'Fibonacci'
         self.starter_seq = [1,1]
         super().__init__(n)
-    def next_item(self):
-        return self.seq[-2] + self.seq[-1]
+    def next_item_batch(self):
+        return [self.seq[-2] + self.seq[-1]]
 
 class Natural(Sequence):
     def __init__(self,n=1):
         self.name = 'Natural'
         self.starter_seq = [1]
         super().__init__(n)
-    def next_item(self):
-        return self.seq[-1]+1
+    def next_item_batch(self):
+        return [self.seq[-1]+1]

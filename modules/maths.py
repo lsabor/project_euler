@@ -70,4 +70,19 @@ def divisors(n: int) -> list:
     divs.sort()
     return divs
 
+def factorial(n: int) -> int:
+    # == n!
+    return iterable_product(range(1,n+1))
+
+def partial_factorial(n: int, k: int) -> int:
+    # == n!/k!
+    return iterable_product(range(k+1,n+1))
+
+def n_choose_k(n: int,k: int) -> int:
+    # == nCk
+    return partial_factorial(n,k) // factorial(n-k)
+
+
+
+
 

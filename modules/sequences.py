@@ -8,7 +8,7 @@ class Sequence:
     display_len = 10
 
     def __init__(self,n: int):
-        self.cache_file = '../caches/sequences/'+self.name+'.json'
+        self.cache_file = '../../caches/sequences/'+self.name+'.json'
         self.read_cache()
         if len(self.seq) < n:
             self.extend_seq(n-len(self.seq))
@@ -80,7 +80,7 @@ class Sequence:
                 length += 1
             else:
                 return passing
-        raise Exception(f'Sequence {self.name} satisfies {include_condition} past {last_index=}')
+        raise Exception(f'Sequence {self.name} satisfies {include_condition} past last_index {last_index}')
 
     def take_while_lt(self,n: float,last_index=1000) -> list:
         return self.take_while(lambda x: x< n,last_index=last_index)
@@ -94,7 +94,7 @@ class Sequence:
 class Primes(Sequence):
     # lists the primes in sequential order
     def __init__(self,n=1):
-        self.name = 'primes'
+        self.name = 'Primes'
         self.starter_seq = [2]
         super().__init__(n)
     def next_item(self):
@@ -107,6 +107,8 @@ class Primes(Sequence):
             primes = [x for x in primes if x%p != 0]
         print(f'Adding primes between {primes[0]} and {primes[-1]}')
         return primes
+    def reset(self):
+        raise Exception('Please don\'t reset the cache for primes')
 
 class Fibonacci(Sequence):
     # lists the Fibonacci sequence in order

@@ -47,33 +47,9 @@ def num_from_pf_counter(pf_counter: Counter) -> int:
     # doesn't check if counter is a proper prime factorization
     n = 1
     for p in pf_counter:
-        n *= p**pf_counter[p]
+        n *= int(p)**pf_counter[p]
     return n
 
-def lcm_pf(*args: int) -> Counter:
-    # returns the lcm as a prime factorization from a set of ints
-    counters = map(prime_factorization,args)
-    lcm_pf_counter = Counter()
-    for c in counters:
-        lcm_pf_counter |= c
-    return lcm_pf_counter
 
-def lcm(*args: int) -> int:
-    # returns the lcm as an int from a set of ints
-    return num_from_pf_counter(lcm_pf(*args))
-
-def gcf_pf(*args: int) -> Counter:
-    # returns the gcf as a prime factorization from a set of ints
-    counters = list(map(prime_factorization,args))
-    gcf_pf_counter = Counter()
-    for c in counters:
-        gcf_pf_counter |= c
-    for c in counters:
-        gcf_pf_counter &= c
-    return gcf_pf_counter
-
-def gcf(*args: int) -> int:
-    # returns the gcf as an int from a set of ints
-    return num_from_pf_counter(gcf_pf(*args))
 
 

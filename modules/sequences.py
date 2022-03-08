@@ -82,13 +82,13 @@ class Sequence:
                 return passing
         raise Exception(f'Sequence {self.name} satisfies {include_condition} past last_index {last_index}')
 
-    def take_while_lt(self,n: float,last_index=1000) -> list:
+    def take_while_lt(self,n: float,last_index=200000) -> list:
         return self.take_while(lambda x: x< n,last_index=last_index)
-    def take_while_gt(self,n: float,last_index=1000) -> list:
+    def take_while_gt(self,n: float,last_index=200000) -> list:
         return self.take_while(lambda x: x> n,last_index=last_index)
-    def take_while_le(self,n: float,last_index=1000) -> list:
+    def take_while_le(self,n: float,last_index=200000) -> list:
         return self.take_while(lambda x: x<=n,last_index=last_index)
-    def take_while_ge(self,n: float,last_index=1000) -> list:
+    def take_while_ge(self,n: float,last_index=200000) -> list:
         return self.take_while(lambda x: x>=n,last_index=last_index)
 
 class Primes(Sequence):

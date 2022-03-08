@@ -1,81 +1,152 @@
 # This module holds tree functions
 
-import picke
-
-
 class Node:
 
-    def __init__(self,value = None):
-        self.value = value
+    def __init__(self,value = None,parent=None,children = None):
+        self.value    = value
+        self.parent   = parent
+        self.children = [] if children is None else children
+        self.depth    = self.update_depth()
 
     def __repr__(self):
-        return self.value
+        return f'{self.parent_value()} <- **{self.value}** -> {self.children_values()}'
 
-class Node_Upward(Node):
+    def update_depth(self):
+        self.depth = 0 if not self.parent else self.parent.depth + 1
+        return self.depth
 
-    def __init__(self,value = None):
-        super().__init__(value)
-        self.parent = None
+    def add_child(self,node):
+        self.children.append(node)
 
-class Node_Immovable(Node_Upward):
-    
-    def __init__(self,value = None):
-        super().__init__(value)
-        self.dist     = self.distance
-        self.children = []
-    
-    def distance(self):
-        dist = 0
+    def children_values(self):
+        return [x.value for x in self.children]
+
+    def parent_value(self):
         if self.parent is not None:
-            dist = 1 + self.parent.dist
-        return dist
+            return self.parent.value
+        return None
 
+    # def serialize(self):
+    #     node_dict = {
+    #         'value'   : self.value,
+    #         'children': [c.serialize() for c in self.children if c is not None],
+    #     }
+    #     return json.dumps(node_dict)
 
 
 class Tree:
+    display_depth = 10
 
-    def __init__(self,head = None):
-        self.head = head
+    def __init__(self,first_node):
+        self.head = first_node.__class__(first_node.initial_value)
+        self.node_list = self.nodes()
+        self.value_list = self.values()
+        self.attach_node(first_node)
 
 
-class Tree_Unchanging(Tree):
+    def __repr__(self):
+        i = 0
+        rep = ''
+        display_list = [self.head]
+        while i < Tree.display_depth and display_list:
+            rep += f'\nTree Depth {i}:'
+            next_display_list = []
+            for node in display_list:
+                rep += '\n\t\t'+node.__repr__()
+                next_display_list += node.children
+            display_list = next_display_list
+            i += 1
+        return rep
 
-    def __init__(self,head = None):
-        super().__init__(head)
-        self.nodes = {head.value: head}
+    def display_full(self):
+        rep = ''
+        display_list = [self.head]
+        while display_list:
+            rep += f'\nTree Depth {i}:'
+            next_display_list = []
+            for node in display_list:
+                rep += '\n\t\t'+node.__repr__()
+                next_display_list += node.children
+            display_list = next_display_list
+        print(rep)
 
-    def attach(self,node: Node) -> Tree:
-        next_val = self.get_next_value(node)
-        if next_val in self.nodes:
-            parent_node = self.nodes[next_val]
-            self.connect_nodes(node,parent_node)
-        else:
-            next_node = Node_Immovable(next_val)
-            self.connect_nodes(node,next_node)
-            self.attach(next_node)
-    
-    def connect_nodes(self,child_node,parent_node):
+    def nodes(self):
+        nodes = []
+        node_list = [self.head]
+        while node_list:
+            nodes += node_list
+            next_node_list = []
+            for node in node_list:
+                next_node_list += node.children
+            node_list = next_node_list
+        return nodes
+
+    def values(self):
+        return [node.value for node in self.node_list]
+
+    def find_node_by_value(self,value) -> Node:
+        if value in self.value_list:
+            return self.node_list[self.value_list.index(value)]
+        return None
+
+    def attach_node(self,node):
+        if node.value in self.value_list:
+            return
+        new_nodes = [node]
+        attach_value = node.get_parent_value()
+        attach_node = self.find_node_by_value(attach_value)
+        while attach_node is None:
+            new_node = node.__class__(attach_value)
+            new_nodes.append(new_node)
+            self.mate_nodes(node,new_node)
+            node = new_node
+            attach_value = node.get_parent_value()
+            attach_node = self.find_node_by_value(attach_value)
+        self.mate_nodes(node,attach_node)
+        new_nodes = list(reversed(new_nodes))
+        for node in new_nodes:
+            node.update_depth()
+        self.node_list += new_nodes
+        self.value_list += [node.value for node in new_nodes]
+
+    def attach_node_from_value(self,value):
+        new_node = self.head.__class__(value)
+        self.attach_node(new_node)
+
+    def mate_nodes(self,child_node,parent_node):
+        parent_node.add_child(child_node)
         child_node.parent = parent_node
-        parent_node.children.append(child_node)
 
-    def get_next_value(node):
-        pass # define this in child class
+    def max_depth(self):
+        return
 
-
-
-class Collatz(Tree_Unchanging):
-
+    # def serialize(self):
+    #     serialization = self.head.serialize()
+    #     return json.dumps(serialization)
     
-
-    def __init__(self):
-        super().__init__(Node_Immovable(value = 1))
-        self.name = "Collatz"
-
-    def get_next_value(node):
-        n = node.value
-        return n/2 if n%2==0 else 3*n+1
+    # @classmethod
+    # def unserialize(self,tree_json):
+    #     tree_dict = json.loads(tree_json)
+        
 
 
+
+
+class Collatz(Node):
+    name = 'Collatz'
+    
+    def __init__(self,value=1):
+        self.initial_value = 1
+        super().__init__(value=value)
+
+    def get_parent_value(self):
+        n=self.value
+        return n//2 if n%2 == 0 else 3*n+1
+
+    # @classmethod
+    # def unserialize(node_json):
+    #     node_dict = json.loads(node_json)
+    #     return Collatz(**node_dict)
 
 
 

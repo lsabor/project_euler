@@ -12,7 +12,7 @@ def is_prime(n: int) -> bool:
     # returns if n is a prime
     if n-int(n) != 0 or n < 2:
         return False
-    return n in P.take_while_le(2*n)
+    return n == P.take_while_le(n)[-1]
 
 def prev_prime(n: Number) -> int:
     # returns the next prime smaller than n, None if n <= 2
@@ -26,9 +26,9 @@ def next_prime(n: Number) -> int:
     # returns the next prime larger than n
     if n < 2:
         return 2
-    return next(p for p in P if p > n)
+    return next(p for p in P.take_while_le(2*n) if p > n)
 
-def prime_factorization(n: int) -> list:
+def prime_factorization(n: int) -> Counter:
     # returns the prime factorization of an int
     # e.g. 28 -> Counter({2:2,7:1})
     if n - int(n) != 0:

@@ -4,7 +4,8 @@ import numpy as np
 
 def parse_mat_string(mat_string):
     # parses matrix from specific string notation
-    # if leading value is '0X', put a space before it
+    if mat_string[0] == '0': # fixes leading 0 issue
+        mat_string == ' '+mat_string
     mat_string = mat_string.replace('\n','; ')
     mat_string = mat_string.replace(' 0',' ')
     matrix     = np.matrix(mat_string)

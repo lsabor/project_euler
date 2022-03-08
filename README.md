@@ -18,18 +18,38 @@ File Structure:
 /project_euler
   *  README.md  
   *  requirements.txt  
-  *  /modules/  
-  *    *  maths.py    <- helper modules that get used multiple times  
-  *  /00__s/  
-  *    *  0000.ipynb  <- example solution  
-  *    *  0001.ipynb  <- solution to problem 1  
-  *    *  0002.ipynb  
+  *  /modules/            <- helper modules that get used multiple times  
+  *    *  sequences.py  
+  *    *  primes.py  
   *    *  ...  
-  *    *  0099.ipynb  
+  *    *  trees.py  
+  *  /caches/             <- caches for high-compute problems  
+  *    *  /sequences/  
+  *    *    *  Fibonacci.json  
+  *    *    *  Natural.json  
+  *    *    *  ...  
+  *    *    *  Triangle_Numbers.json  
+  *    *    *  /compound/  
+  *    *    *    *  Triangle_Numbers_Prime_Factorization.json  
+  *    *  /trees/  
+  *    *    *  Collatz.json  
+  *  /0X00s/  
+  *    *  /00X0s/
+  *    *    *  00X0.ipynb  <- example solution  
+  *    *    *  00X1.ipynb  <- solution to problem 1  
+  *    *    *  00X2.ipynb  
+  *    *    *  ...  
+  *    *    *  00X9.ipynb
+  *    *  /0010s/
+  *    *    *  0010.ipynb   
+  *    *    *  ...  
+  *    *    *  0019.ipynb  
+  *    *  ...  
   *  /0100s/         <- this will only continue privately, see note below  
-  *    *  0100.ipynb  
-  *    *  ...  
-  *    *  0199.ipynb  
+  *    *  /0010s/
+  *    *    *  0100.ipynb  
+  *    *    *  ...  
+  *    *    *  0199.ipynb  
   *  ...  
 
 

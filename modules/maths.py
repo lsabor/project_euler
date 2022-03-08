@@ -30,7 +30,7 @@ def lcm(*args: int) -> int:
 
 def gcf_pf(*args: int) -> Counter:
     # returns the gcf as a prime factorization from a set of ints
-    counters = list(map(primes.prime_factorization,args))
+    counters = map(primes.prime_factorization,args)
     gcf_pf_counter = Counter()
     for c in counters:
         gcf_pf_counter |= c
@@ -43,7 +43,7 @@ def gcf(*args: int) -> int:
     return primes.num_from_pf_counter(gcf_pf(*args))
 
 def divisor_count_from_pf(pf: Counter) -> int:
-    # returns a count of all the divisors form a prime factorization
+    # returns a count of all the divisors from a prime factorization
     prod = iterable_product(map(lambda x: x+1,pf.values()))
     return prod
 

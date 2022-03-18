@@ -25,6 +25,9 @@ class Graph:
     def __init__(self,edges = None):
         self.edges = edges if edges else []
 
+    def add_edge(self,edge):
+        self.edges.append(edge)
+
     def __repr__(self):
         output = ''
         for edge in self.edges:

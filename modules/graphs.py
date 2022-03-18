@@ -35,3 +35,6 @@ class Graph:
         return output
 
 
+def nodify(array)-> list:
+    node_array = [[Node(val) for val in row] for row in array]
+    return node_array

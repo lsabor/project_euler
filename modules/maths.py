@@ -8,6 +8,7 @@ def sum_consecutive_ints(n: int) -> int:
     return int(n*(n+1)/2)
 
 def sum_squares(n_list: list) -> float:
+    # returns sum on squares of a list
     return sum([x**2 for x in n_list])
 
 def iterable_product(iter) -> float:
@@ -70,6 +71,10 @@ def divisors(n: int) -> list:
     divs.sort()
     return divs
 
+def proper_divisors(n: int) -> list:
+    # returns divisors of n not including n
+    return divisors(n)[:-1]
+
 def factorial(n: int) -> int:
     # == n!
     return iterable_product(range(1,n+1))
@@ -81,6 +86,10 @@ def partial_factorial(n: int, k: int) -> int:
 def n_choose_k(n: int,k: int) -> int:
     # == nCk
     return partial_factorial(n,k) // factorial(n-k)
+
+def sum_of_digits(n: int) -> int:
+    # in base 10
+    return sum([int(digit) for digit in str(n)])
 
 
 

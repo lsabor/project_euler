@@ -148,5 +148,3 @@ class Triangle_Numbers(Sequence):
 
 
 
-
-

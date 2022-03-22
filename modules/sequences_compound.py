@@ -2,9 +2,10 @@
 
 import sequences
 import primes
+import maths
 from collections import Counter
 
-prefix = 'compoud/'
+prefix = 'compound/'
 
 class Triangle_Numbers_Prime_Factorization(sequences.Sequence):
     # lists the triangle numbers in order
@@ -20,6 +21,27 @@ class Triangle_Numbers_Prime_Factorization(sequences.Sequence):
         return [self.next_item()]
 
 
+class Divisor_Sum_Natural_Numbers(sequences.Sequence):
+    # lists the sum of the divisors of the natural numbers in order
+    def __init__(self,n=1):
+        self.name = prefix + 'Divisor_Sum_Natural_Numbers'
+        self.starter_seq = [1]
+        super().__init__(n)
+    def next_item(self):
+        next_natural_num = sequences.Natural()[len(self.seq)]
+        return sum(maths.divisors(next_natural_num))
+    def next_item_batch(self):
+        return [self.next_item()]
 
 
-
+class Proper_Divisor_Sum_Natural_Numbers(sequences.Sequence):
+    # lists the sum of the divisors of the natural numbers in order
+    def __init__(self,n=1):
+        self.name = prefix + 'Proper_Divisor_Sum_Natural_Numbers'
+        self.starter_seq = [1]
+        super().__init__(n)
+    def next_item(self):
+        next_natural_num = sequences.Natural()[len(self.seq)]
+        return sum(maths.proper_divisors(next_natural_num))
+    def next_item_batch(self):
+        return [self.next_item()]

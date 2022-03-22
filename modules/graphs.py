@@ -38,6 +38,12 @@ class Edge:
                 last_tag = '-'
         return f'{self.node0} {init_tag}{self.length if self.length else ""}{last_tag} {self.node1}'
 
+    def get_destinies(self):
+        return set([node for node in self.nodes if self in node.in_bound])
+
+    def get_genesises(self):
+        return set([node for node in self.nodes if self in node.outbound])
+
     def has_node(self,node):
         return node in self.nodes
 
@@ -68,11 +74,6 @@ class Edge:
                 self.create_mate_with_nodes(self.node1,self.node0)
                 self.remove_mate_with_nodes(self.node0,self.node1)
     
-    def get_destinies(self):
-        return set([node for node in self.nodes if self in node.in_bound])
-
-    def get_genesises(self):
-        return set([node for node in self.nodes if self in node.outbound])
 
 
 class Graph:
@@ -170,6 +171,11 @@ class Graph:
         self.mark_nodes(nodes,flag_name=None)
     def reset_node(self,node: Node):
         self.mark_node(node,flag=None)
+
+
+    # def get_adj_nodes_with_criteria(self,node, criteria:function):
+    #     pass
+
 
     def get_adjacent_nodes_with_flag(            self,node: Node,flag_name: str):
         return set([node for node in self.get_adjacent_nodes(node) if node.flag==flag_name])

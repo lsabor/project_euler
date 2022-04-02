@@ -102,7 +102,18 @@ def sum_of_digits(n: int) -> int:
     # in base 10
     return sum([int(digit) for digit in str(n)])
 
+def permutations(ls):
+    if len(ls) > 2:
+        perms = []
+        first = ls[0]
+        rest = ls[1:]
+        for perm in permutations(rest):
+            for j in range(len(perm)+1):
+                perms.append(perm[:j]+[first]+perm[j:])
+        return perms
+    elif len(ls) == 2:
+        return [ ls, [ls[1],ls[0]] ]
+    return [ls]
 
 
-
-
+   

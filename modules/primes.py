@@ -2,7 +2,6 @@
 
 import sequences
 
-from tokenize import Number
 from collections import Counter
 
 
@@ -14,7 +13,7 @@ def is_prime(n: int) -> bool:
         return False
     return n == P.take_while_le(n)[-1]
 
-def prev_prime(n: Number) -> int:
+def prev_prime(n) -> int:
     # returns the next prime smaller than n, None if n <= 2
     if n <= 2:
         return None
@@ -22,7 +21,7 @@ def prev_prime(n: Number) -> int:
         n = n-1
     return P.take_while_lt(n)[-1]
 
-def next_prime(n: Number) -> int:
+def next_prime(n) -> int:
     # returns the next prime larger than n
     if n < 2:
         return 2

@@ -2,7 +2,9 @@
 
 import json
 import os
-import itertools
+from collections import Counter
+import copy
+
 
 class Sequence:
     display_len = 10
@@ -18,13 +20,15 @@ class Sequence:
             return str(self.seq) 
         return str(self.seq[:Sequence.display_len])
 
-    def __getitem__(self,index):
+    def __getitem__(self,key):
         length = len(self.seq)
-        if index < length:
-            return self.seq[index]
+        max = key.stop if isinstance(key,slice) else key
+        if max < length:
+            return self.seq[key]
         else:
-            self.extend_seq(index-length+1)
-            return self.seq[index]
+            self.extend_seq(max-length+1)
+            return self.seq[key]
+
 
     def __len__(self):
         return len(self.seq)
@@ -59,7 +63,9 @@ class Sequence:
         # appends next seq vals to current seq
         nxts = self.nexts()
         self.seq += nxts
-        self.update_cache()
+        if len(self)%100==0 or len(nxts)>100:
+            self.update_cache()
+            print(f'{self.name} cache updated. New length = {len(self)}')
         return nxts
 
     def extend_seq(self,n: int):
@@ -146,5 +152,34 @@ class Triangle_Numbers(Sequence):
         return [self.next_item()]
 
 
-
+class Prime_Factorizations(Sequence):
+    # lists the prime factorizations in Counter form of the natural numbers in order
+    def __init__(self,n=1):
+        self.name = 'Prime_Factorizations'
+        self.starter_seq = [Counter()]*2
+        super().__init__(n)
+    def next_item(self):
+        # this is inefficient, just use next_item_batch
+        return self.next_item_batch[0]
+    def next_item_batch(self):
+        search_cap = 2*len(self.seq)
+        relevant_primes = Primes().take_while_le(search_cap)
+        pf_counters = [None]*(search_cap+1)
+        pf_counters[0] = pf_counters[1] = Counter()
+        def increment(pf_counter):
+            from primes import num_from_pf_counter
+            for p in relevant_primes:
+                if num_from_pf_counter(pf_counter)*p <= search_cap:
+                    pf_counter[p] += 1
+                    pf_counters[num_from_pf_counter(pf_counter)] = copy.copy(pf_counter)
+                    break
+                else:
+                    del pf_counter[p]
+            return pf_counter
+        pf_counter = Counter()
+        for _ in range(search_cap+1):
+            pf_counter = increment(pf_counter)
+        return pf_counters[len(self):]
+    def reset(self):
+        raise Exception('Please don\'t reset the cache for Prime Factorizations')
 

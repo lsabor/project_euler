@@ -1,6 +1,7 @@
 # This module holds basic math functions
 
 import primes
+from sequences import Prime_Factorizations
 from collections import Counter
 
 def sum_consecutive_ints(n: int) -> int:
@@ -17,9 +18,15 @@ def iterable_product(iter) -> float:
         ip *= n
     return ip
 
+def smart_pf_counter(n) -> Counter:
+    PF = Prime_Factorizations()
+    if len(PF) >= n:
+        return PF[n]
+    return primes.prime_factorization(n)
+
 def lcm_pf(*args: int) -> Counter:
     # returns the lcm as a prime factorization from a set of ints
-    counters = map(primes.prime_factorization,args)
+    counters = map(smart_pf_counter,args)
     lcm_pf_counter = Counter()
     for c in counters:
         lcm_pf_counter |= c
@@ -31,7 +38,7 @@ def lcm(*args: int) -> int:
 
 def gcf_pf(*args: int) -> Counter:
     # returns the gcf as a prime factorization from a set of ints
-    counters = map(primes.prime_factorization,args)
+    counters = map(smart_pf_counter,args)
     gcf_pf_counter = Counter()
     for c in counters:
         gcf_pf_counter |= c
@@ -43,21 +50,18 @@ def gcf(*args: int) -> int:
     # returns the gcf as an int from a set of ints
     return primes.num_from_pf_counter(gcf_pf(*args))
 
-def divisor_count_from_pf(pf: Counter) -> int:
+
+def divisor_count_from_pf_counter(pf: Counter) -> int:
     # returns a count of all the divisors from a prime factorization
     prod = iterable_product(map(lambda x: x+1,pf.values()))
     return prod
 
 def divisor_count(n: int) -> int:
     # returns a count of all the divisors of an integer
-    pf = primes.prime_factorization(n)
-    return divisor_count_from_pf(pf)
+    pf = smart_pf_counter(n)
+    return divisor_count_from_pf_counter(pf)
 
-def divisors(n: int) -> list:
-    # returns all the divisors of an integer
-    if n == 1:
-        return [1]
-    pf = primes.prime_factorization(n)
+def divisors_from_pf_counter(pf: Counter) -> list:
     divs = [1]
     tracker = dict(pf)
     while max(tracker.values())>0:
@@ -70,6 +74,13 @@ def divisors(n: int) -> list:
                 tracker[factor] = pf[factor]
     divs.sort()
     return divs
+
+def divisors(n: int) -> list:
+    # returns all the divisors of an integer
+    if n == 1:
+        return [1]
+    pf = smart_pf_counter(n)
+    return divisors_from_pf_counter(pf)
 
 def proper_divisors(n: int) -> list:
     # returns divisors of n not including n

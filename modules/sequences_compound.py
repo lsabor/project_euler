@@ -1,8 +1,8 @@
 # This module holds basic sequence functions
 
 import sequences
-import primes
-import maths
+from primes import prime_factorization
+from maths import divisors_from_pf_counter
 from collections import Counter
 
 prefix = 'compound/'
@@ -16,32 +16,46 @@ class Triangle_Numbers_Prime_Factorization(sequences.Sequence):
         super().__init__(n)
     def next_item(self):
         next_tri_num = sequences.Triangle_Numbers()[len(self.seq)]
-        return primes.prime_factorization(next_tri_num)
+        return prime_factorization(next_tri_num)
     def next_item_batch(self):
         return [self.next_item()]
 
 
-class Divisor_Sum_Natural_Numbers(sequences.Sequence):
-    # lists the sum of the divisors of the natural numbers in order
+class Divisors_Positive_Integers(sequences.Sequence):
+    # lists the Divisors in list form of the natural numbers in order
     def __init__(self,n=1):
-        self.name = prefix + 'Divisor_Sum_Natural_Numbers'
-        self.starter_seq = [1]
+        self.name = prefix + 'Divisors_Positive_Integers'
+        self.starter_seq = [[0],[1]]
         super().__init__(n)
     def next_item(self):
-        next_natural_num = sequences.Natural()[len(self.seq)]
-        return sum(maths.divisors(next_natural_num))
+        return self.next_item_batch[0]
     def next_item_batch(self):
-        return [self.next_item()]
+        length = len(self)
+        next_items = []
+        PF = sequences.Prime_Factorizations()
+        for i in range(length,length*2 + 1):
+            next_items.append(divisors_from_pf_counter(PF[i]))
+        return next_items
 
 
-class Proper_Divisor_Sum_Natural_Numbers(sequences.Sequence):
+
+class Proper_Divisor_Sum_Positive_Integers(sequences.Sequence):
     # lists the sum of the divisors of the natural numbers in order
     def __init__(self,n=1):
-        self.name = prefix + 'Proper_Divisor_Sum_Natural_Numbers'
-        self.starter_seq = [1]
+        self.name = prefix + 'Proper_Divisor_Sum_Positive_Integers'
+        self.starter_seq = [0,0]
         super().__init__(n)
     def next_item(self):
-        next_natural_num = sequences.Natural()[len(self.seq)]
-        return sum(maths.proper_divisors(next_natural_num))
+        return sum(Divisors_Positive_Integers()[len(self)][:-1])
     def next_item_batch(self):
         return [self.next_item()]
+
+    def next_item(self):
+        return self.next_item_batch[0]
+    def next_item_batch(self):
+        length = len(self)
+        next_items = []
+        D = Divisors_Positive_Integers()
+        for i in range(length,length*2 + 1):
+            next_items.append(sum(D[i][:-1]))
+        return next_items

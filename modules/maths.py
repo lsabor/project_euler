@@ -103,6 +103,7 @@ def sum_of_digits(n: int) -> int:
     return sum([int(digit) for digit in str(n)])
 
 def permutations(ls):
+    # returns a list of all permutations of the list
     if len(ls) > 2:
         perms = []
         first = ls[0]
@@ -115,5 +116,22 @@ def permutations(ls):
         return [ ls, [ls[1],ls[0]] ]
     return [ls]
 
+def combinations(ls,n):
+    ''' just use itertools combinations though '''
+    # returns a list of all combinations (in order of ls) of n elements from list
+    length = len(ls)
+    if n==0 or length < n:
+        return [[]]
+    if length == n:
+        return [ls]
+    if length > n:
+        first = ls[0]
+        rest = ls[1:]
+        combs = []
+        for comb in combinations(rest,n-1):
+            combs.append([first]+comb)
+        for comb in combinations(rest,n):
+            combs.append(comb)
+        return combs
 
    

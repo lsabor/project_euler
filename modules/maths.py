@@ -18,27 +18,27 @@ def iterable_product(iter) -> float:
         ip *= n
     return ip
 
-def smart_pf_counter(n) -> Counter:
-    PF = Prime_Factorizations()
+def smart_pf_counter(n, PF = None) -> Counter:
+    PF = PF if PF else Prime_Factorizations()
     if len(PF) >= n:
         return PF[n]
     return primes.prime_factorization(n)
 
-def lcm_pf(*args: int) -> Counter:
+def lcm_pf(*args: int, PF = None) -> Counter:
     # returns the lcm as a prime factorization from a set of ints
-    counters = map(smart_pf_counter,args)
+    counters = [smart_pf_counter(n, PF = PF) for n in args]
     lcm_pf_counter = Counter()
     for c in counters:
         lcm_pf_counter |= c
     return lcm_pf_counter
 
-def lcm(*args: int) -> int:
+def lcm(*args: int, PF = None) -> int:
     # returns the lcm as an int from a set of ints
-    return primes.num_from_pf_counter(lcm_pf(*args))
+    return primes.num_from_pf_counter(lcm_pf(*args, PF = PF))
 
-def gcf_pf(*args: int) -> Counter:
+def gcf_pf(*args: int, PF = None) -> Counter:
     # returns the gcf as a prime factorization from a set of ints
-    counters = map(smart_pf_counter,args)
+    counters = [smart_pf_counter(n, PF = PF) for n in args]
     gcf_pf_counter = Counter()
     for c in counters:
         gcf_pf_counter |= c
@@ -46,9 +46,9 @@ def gcf_pf(*args: int) -> Counter:
         gcf_pf_counter &= c
     return gcf_pf_counter
 
-def gcf(*args: int) -> int:
+def gcf(*args: int, PF = None) -> int:
     # returns the gcf as an int from a set of ints
-    return primes.num_from_pf_counter(gcf_pf(*args))
+    return primes.num_from_pf_counter(gcf_pf(*args, PF = PF))
 
 
 def divisor_count_from_pf_counter(pf: Counter) -> int:

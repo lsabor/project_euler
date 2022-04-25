@@ -38,11 +38,14 @@ class Sequence:
         self.seq = self.starter_seq
         self.update_cache()
 
+    def special_deserialize(self,seq):
+        return seq
+
     def read_cache(self):
         # initilizes self.seq
         if os.path.exists(self.cache_file):
             with open(self.cache_file,'r') as cache:
-                self.seq = json.load(cache)
+                self.seq = self.special_deserialize(json.load(cache))
         else:
             self.seq = self.starter_seq
             self.update_cache()
@@ -182,4 +185,6 @@ class Prime_Factorizations(Sequence):
         return pf_counters[len(self):]
     def reset(self):
         raise Exception('Please don\'t reset the cache for Prime Factorizations')
+    def special_deserialize(self,seq):
+        return [Counter({int(k):v for k,v in d.items()}) for d in seq]
 

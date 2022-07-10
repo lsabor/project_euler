@@ -20,7 +20,7 @@ def is_prime_single_check(n: int) -> bool:
     """returns if n is a prime, but doesn't update the Primes sequence"""
     # to check if n is prime, we only have to check if
     # it's divisible by any primes less than the square root of it
-    if (n < 1) or (n - int(n) != 0):
+    if (n < 1) or (n % 1 != 0):
         return False
     if n == 2:
         return True

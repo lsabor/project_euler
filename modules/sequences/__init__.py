@@ -175,6 +175,21 @@ class Triangle_Numbers(Sequence):
         return [self.next_item()]
 
 
+class Pentagonal_Numbers(Sequence):
+    # lists the pentagonal numbers in order
+    def __init__(self, n=1):
+        self.name = "Pentagonal_Numbers"
+        self.starter_seq = [1]
+        super().__init__(n)
+
+    def next_item(self):
+        n = len(self.seq) + 1
+        return int(n * (3 * n - 1) / 2)
+
+    def next_item_batch(self):
+        return [self.next_item()]
+
+
 class Prime_Factorizations(Sequence):
     # lists the prime factorizations in Counter form of the natural numbers in order
     def __init__(self, n=1):

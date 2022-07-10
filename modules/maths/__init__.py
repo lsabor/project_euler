@@ -1,10 +1,14 @@
 # This module holds basic math functions
 
 from numbers import Number
+from typing import Generator, Iterable, Mapping
 import primes
 from sequences import Prime_Factorizations
 from collections import Counter
 from math import sqrt
+from functools import reduce
+from operator import add
+from itertools import permutations as perms
 
 
 def sum_consecutive_ints(n: int) -> int:
@@ -123,7 +127,8 @@ def sum_of_digits(n: int) -> int:
 
 
 def permutations(ls):
-    # returns a list of all permutations of the list
+    """returns a list of all permutations of the list
+    Just use itertools.permutations though, this is just a proof of concept"""
     if len(ls) > 2:
         perms = []
         first = ls[0]
@@ -135,6 +140,11 @@ def permutations(ls):
     elif len(ls) == 2:
         return [ls, [ls[1], ls[0]]]
     return [ls]
+
+
+def string_permutations(string: str) -> Mapping:
+    """returns all permutations of a string"""
+    return map(lambda x: reduce(add, x), perms(string))
 
 
 def combinations(ls, n):
@@ -186,7 +196,7 @@ def square_root(n, precision=5):
             m = -r
         lower = r
 
-    # keep iterating until the movement rounded to precision+1 decimal places is 0
+    # keep iterating until the movement rounded to precision decimal places is 0
     while round(m, precision) != 0:
         estimate = r**2
         if n == estimate:
@@ -222,3 +232,15 @@ def is_triangle_number(n: Number) -> bool:
     if (n < 1) or (n % 1 != 0):
         return False
     return (sqrt(2 * n + 1 / 4) - 1 / 2) % 1 == 0
+
+
+def is_divisible(n: Number, d: Number) -> bool:
+    """tests if n is divisible by d"""
+    return n % d == 0
+
+
+def is_pentagonal_number(n: Number) -> bool:
+    """tests if n is a pentagonal number"""
+    if (n < 1) or (n % 1 != 0):
+        return False
+    return ((2 * sqrt(6 * n + 1 / 4) + 1) / 6) % 1 == 0

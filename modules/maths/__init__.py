@@ -234,13 +234,20 @@ def is_triangle_number(n: Number) -> bool:
     return (sqrt(2 * n + 1 / 4) - 1 / 2) % 1 == 0
 
 
-def is_divisible(n: Number, d: Number) -> bool:
-    """tests if n is divisible by d"""
-    return n % d == 0
-
-
 def is_pentagonal_number(n: Number) -> bool:
     """tests if n is a pentagonal number"""
     if (n < 1) or (n % 1 != 0):
         return False
     return ((2 * sqrt(6 * n + 1 / 4) + 1) / 6) % 1 == 0
+
+
+def is_hexagonal_number(n: Number) -> bool:
+    """tests if n is a hexagonal number"""
+    if (n < 1) or (n % 1 != 0):
+        return False
+    return (sqrt(2 * n + 1 / 4) / 2 + 1 / 4) % 1 == 0
+
+
+def is_divisible(n: Number, d: Number) -> bool:
+    """tests if n is divisible by d"""
+    return n % d == 0

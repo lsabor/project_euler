@@ -9,6 +9,7 @@ from math import sqrt
 from functools import reduce
 from operator import add
 from itertools import permutations as perms
+from itertools import chain, combinations
 
 
 def sum_consecutive_ints(n: int) -> int:
@@ -283,3 +284,9 @@ def tetrate(n, depth=2, mod=0):
     for _ in range(depth - 1):
         result = raise_power_modulo(result, n, mod=mod)
     return result
+
+
+def powerset(iterable):
+    """returns all subsets of a set"""
+    xs = list(iterable)
+    return chain.from_iterable(combinations(xs, n) for n in range(len(xs) + 1))

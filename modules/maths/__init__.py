@@ -251,3 +251,35 @@ def is_hexagonal_number(n: Number) -> bool:
 def is_divisible(n: Number, d: Number) -> bool:
     """tests if n is divisible by d"""
     return n % d == 0
+
+
+def raise_power_modulo(n, x, mod=0):
+    """returns n to the xth power modulo mod at each step"""
+    if n == 1:
+        return 1
+    if x == 0:
+        if n == 0:
+            print("WARNING: only true in ordinary algebra")
+        return 1
+
+    if not mod:
+        return n**x
+
+    if x % 1 != 0:
+        raise ValueError("this function requires a whole number x")
+
+    result = 1
+    for _ in range(x):
+        result = (result * n) % mod
+    return result
+
+
+def tetrate(n, depth=2, mod=0):
+    """gives the tetration depth levels deep of n"""
+    if (not depth) or (depth % 1 != 0):
+        raise ValueError("depth must be an integer greater than 0")
+
+    result = n
+    for _ in range(depth - 1):
+        result = raise_power_modulo(result, n, mod=mod)
+    return result

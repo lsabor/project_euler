@@ -1,2 +1,5 @@
 *.pyc
 *__pycache__
+
+# Large Files
+*Problem0477_Numbers.json

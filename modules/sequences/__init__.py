@@ -12,7 +12,8 @@ cache_folder = os.path.join(os.path.dirname(__file__), "caches/")
 class Sequence:
     display_len = 10
 
-    def __init__(self, n: int):
+    def __init__(self, n: int, threshold=100, *args, **kwargs):
+        self.threshold = threshold
         self.cache_file = cache_folder + self.name + ".json"
         self.read_cache()
         if len(self.seq) < n:
@@ -68,7 +69,7 @@ class Sequence:
         # appends next seq vals to current seq
         nxts = self.nexts()
         self.seq += nxts
-        if len(self) % 100 == 0 or len(nxts) > 100:
+        if len(self) % self.threshold == 0 or len(nxts) > self.threshold:
             self.update_cache()
             print(f"{self.name} cache updated. New length = {len(self)}")
         return nxts
@@ -110,10 +111,10 @@ class Sequence:
 
 class Primes(Sequence):
     # lists the primes in sequential order
-    def __init__(self, n=1):
+    def __init__(self, n=1, *args, **kwargs):
         self.name = "Primes"
         self.starter_seq = [2]
-        super().__init__(n)
+        super().__init__(n, *args, **kwargs)
 
     def next_item(self):
         # this is inefficient, just use next_item_batch
@@ -133,10 +134,10 @@ class Primes(Sequence):
 
 class Fibonacci(Sequence):
     # lists the Fibonacci sequence in order
-    def __init__(self, n=2):
+    def __init__(self, n=2, *args, **kwargs):
         self.name = "Fibonacci"
         self.starter_seq = [1, 1]
-        super().__init__(n)
+        super().__init__(n, *args, **kwargs)
 
     def next_item(self):
         return self.seq[-2] + self.seq[-1]
@@ -147,10 +148,10 @@ class Fibonacci(Sequence):
 
 class Natural(Sequence):
     # lists the natural numbers in order
-    def __init__(self, n=1):
+    def __init__(self, n=1, *args, **kwargs):
         self.name = "Natural"
         self.starter_seq = [1]
-        super().__init__(n)
+        super().__init__(n, *args, **kwargs)
 
     def next_item(self):
         return self.seq[-1] + 1
@@ -162,10 +163,10 @@ class Natural(Sequence):
 class Triangle_Numbers(Sequence):
     # lists the triangle numbers in order
     # Nth triangle num is sum of all natural numbers up to N
-    def __init__(self, n=1):
+    def __init__(self, n=1, *args, **kwargs):
         self.name = "Triangle_Numbers"
         self.starter_seq = [1]
-        super().__init__(n)
+        super().__init__(n, *args, **kwargs)
 
     def next_item(self):
         n = len(self.seq) + 1
@@ -177,10 +178,10 @@ class Triangle_Numbers(Sequence):
 
 class Pentagonal_Numbers(Sequence):
     # lists the pentagonal numbers in order
-    def __init__(self, n=1):
+    def __init__(self, n=1, *args, **kwargs):
         self.name = "Pentagonal_Numbers"
         self.starter_seq = [1]
-        super().__init__(n)
+        super().__init__(n, *args, **kwargs)
 
     def next_item(self):
         n = len(self.seq) + 1
@@ -191,41 +192,38 @@ class Pentagonal_Numbers(Sequence):
 
 
 class Prime_Factorizations(Sequence):
-    # lists the prime factorizations in Counter form of the natural numbers in order
-    def __init__(self, n=1):
+    """lists the prime factorizations in Counter form of the natural numbers in order"""
+
+    def __init__(self, n=1, *args, **kwargs):
         self.name = "Prime_Factorizations"
         self.starter_seq = [Counter()] * 2
-        super().__init__(n)
+        super().__init__(n, *args, **kwargs)
 
     def next_item(self):
         # this is inefficient, just use next_item_batch
         return self.next_item_batch[0]
 
     def next_item_batch(self):
-        search_cap = 2 * len(self.seq)
-        relevant_primes = Primes().take_while_le(search_cap)
-        pf_counters = [None] * (search_cap + 1)
-        pf_counters[0] = pf_counters[1] = Counter()
+        from primes import prime_factorization
 
-        def increment(pf_counter):
-            from primes import num_from_pf_counter
-
-            for p in relevant_primes:
-                if num_from_pf_counter(pf_counter) * p <= search_cap:
-                    pf_counter[p] += 1
-                    pf_counters[num_from_pf_counter(pf_counter)] = copy.copy(pf_counter)
-                    break
-                else:
-                    del pf_counter[p]
-            return pf_counter
-
-        pf_counter = Counter()
-        for _ in range(search_cap + 1):
-            pf_counter = increment(pf_counter)
-        return pf_counters[len(self) :]
+        return [prime_factorization(len(self) + n) for n in range(self.threshold)]
 
     def reset(self):
         raise Exception("Please don't reset the cache for Prime Factorizations")
 
     def special_deserialize(self, seq):
         return [Counter({int(k): v for k, v in d.items()}) for d in seq]
+
+
+class Problem0477_Numbers(Sequence):
+    # lists the Problem0477 numbers in order
+    def __init__(self, n=1, *args, **kwargs):
+        self.name = "Problem0477_Numbers"
+        self.starter_seq = [0]
+        super().__init__(n, *args, **kwargs)
+
+    def next_item(self):
+        return (self.seq[-1] ** 2 + 45) % 1000000007
+
+    def next_item_batch(self):
+        return [self.next_item()]

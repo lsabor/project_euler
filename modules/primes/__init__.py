@@ -59,7 +59,10 @@ def prime_factorization(n: int) -> Counter:
     factors = []
     p = 2
     while n != 1:
-        while n % p == 0 and p <= sqrt(n):
+        if (p >= sqrt(n)) or (p == n):
+            factors.append(n)
+            n = 1
+        while n % p == 0:
             factors.append(p)
             n = n // p
         p = next_prime(p)

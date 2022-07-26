@@ -121,10 +121,13 @@ class Primes(Sequence):
         return self.next_item_batch[0]
 
     def next_item_batch(self):
+        from primes import is_prime_single_check
+
         current = self.seq[-1]
-        primes = range(current, 2 * current + 1)
-        for p in self.seq:
-            primes = [x for x in primes if x % p != 0]
+        print(current)
+        to_check = list(range(current, current + self.threshold))[::2]
+        print(to_check)
+        primes = [n for n in to_check if is_prime_single_check(n)]
         print(f"Adding primes between {primes[0]} and {primes[-1]}")
         return primes
 

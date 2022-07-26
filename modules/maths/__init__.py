@@ -254,24 +254,17 @@ def is_divisible(n: Number, d: Number) -> bool:
     return n % d == 0
 
 
-def raise_power_modulo(n, x, mod=0):
+def modex(b, e, m):
     """returns n to the xth power modulo mod at each step"""
-    if n == 1:
-        return 1
-    if x == 0:
-        if n == 0:
-            print("WARNING: only true in ordinary algebra")
-        return 1
-
-    if not mod:
-        return n**x
-
-    if x % 1 != 0:
-        raise ValueError("this function requires a whole number x")
-
+    if m == 1:
+        return 0
     result = 1
-    for _ in range(x):
-        result = (result * n) % mod
+    b %= m
+    while e:
+        if (e % 2) == 1:
+            result = (result * b) % m
+        e >>= 1
+        b = (b * b) % m
     return result
 
 

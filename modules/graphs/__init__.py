@@ -16,11 +16,11 @@ class Node:
 
 
 class Edge:
-    def __init__(self, length: int, node0: Node, node1: Node, direction=1, flag=None):
-        self.length = length
+    def __init__(self, node0: Node, node1: Node, length=None, direction=0, flag=None):
         self.node0 = node0
         self.node1 = node1
-        self.nodes = (self.node0, self.node1)
+        self.length = length
+        self.nodes = set((self.node0, self.node1))
         self.flag = flag
         self.update_direction(direction)
 
@@ -76,8 +76,18 @@ class Edge:
 
 class Graph:
     def __init__(self, edges=None, nodes=None, head=None):
-        self.edges = edges if edges is not None else self.get_edges_from_nodes(nodes)
-        self.nodes = nodes if nodes is not None else self.get_nodes_from_edges(edges)
+
+        self.nodes = set()
+        self.edges = set()
+        if nodes:
+            self.nodes = nodes
+            self.edges = self.get_edges_from_nodes(nodes)
+        if edges:
+            for edge in edges:
+                self.nodes.add(edge.node0)
+                self.nodes.add(edge.node1)
+                self.edges.add(edge)
+                self.edges = self.edges.union(self.get_edges_from_nodes(self.nodes))
         self.set_head(head)
 
     def __repr__(self):
@@ -87,12 +97,25 @@ class Graph:
         output += "NODES:\n" + str(self.nodes)
         return output
 
+    def __len__(self):
+        return len(self.nodes)
+
+    def remove(self, node):
+        for edge in node.get_adjacent_edges():
+            if edge in self.edges:
+                self.edges.remove(edge)
+        self.nodes.remove(node)
+
     def get_edges_from_nodes(self, nodes):
         if not nodes:
             return set()
         edges = set()
         for node in nodes:
-            new_edges = node.outbound.union(node.in_bound)
+            new_edges = set(
+                edge
+                for edge in node.get_adjacent_edges()
+                if ((edge.node0 in nodes) and (edge.node1 in nodes))
+            )
             edges = edges.union(new_edges)
         return edges
 
@@ -319,6 +342,51 @@ class Graph:
         path.reverse()
 
         return end_node.distance, path
+
+    def get_subgraph(self, nodes=None, edges=None):
+        if not (nodes or edges):
+            return Graph()
+        if nodes:
+            return Graph(nodes=nodes)
+        if edges:
+            nodes = set()
+            for edge in edges:
+                nodes.add(edge.node0)
+                nodes.add(edge.node1)
+            return Graph(nodes=nodes)
+
+    def find_cliques(self, size: int):
+        """returns the cliques (subgraph will all interconnected nodes)
+        of given size"""
+        cliques = []
+        if len(self) < size:
+            return cliques
+        if size == 2:
+            # find all pairs in graph
+            for edge in self.edges:
+                cliques.append(set([edge.node0, edge.node1]))
+        else:
+            untested = set(self.nodes)
+            for node in self.nodes:
+                nodes = set()
+                for edge in node.get_adjacent_edges():
+                    nodes = nodes.union(
+                        set(node for node in edge.nodes if node in untested)
+                    )
+                untested.remove(node)
+                if nodes:
+                    nodes.remove(node)
+                edges = set()
+                for n in nodes:
+                    for edge in n.get_adjacent_edges():
+                        if (edge.node0 in nodes) and (edge.node1 in nodes):
+                            edges.add(edge)
+                local_graph = Graph(nodes=nodes, edges=edges)
+                new_cliques = local_graph.find_cliques(size=size - 1)
+                for clique in new_cliques:
+                    clique.add(node)
+                    cliques.append(clique)
+        return cliques
 
 
 def nodify(array) -> list:

@@ -224,31 +224,6 @@ def floor(n):
     return int(n)
 
 
-def is_triangle_number(n: Number) -> bool:
-    """tests if n is a triangle number"""
-    # t_i is the ith triangle number
-    # t_i = (1/2)*i*(i+1)
-    # i = sqrt(2*t_i + 1/4) - 1/2
-    # thus let t_i = n, and see if i is a whole number
-    if (n < 1) or (n % 1 != 0):
-        return False
-    return (sqrt(2 * n + 1 / 4) - 1 / 2) % 1 == 0
-
-
-def is_pentagonal_number(n: Number) -> bool:
-    """tests if n is a pentagonal number"""
-    if (n < 1) or (n % 1 != 0):
-        return False
-    return ((2 * sqrt(6 * n + 1 / 4) + 1) / 6) % 1 == 0
-
-
-def is_hexagonal_number(n: Number) -> bool:
-    """tests if n is a hexagonal number"""
-    if (n < 1) or (n % 1 != 0):
-        return False
-    return (sqrt(2 * n + 1 / 4) / 2 + 1 / 4) % 1 == 0
-
-
 def is_divisible(n: Number, d: Number) -> bool:
     """tests if n is divisible by d"""
     return n % d == 0
@@ -283,3 +258,487 @@ def powerset(iterable):
     """returns all subsets of a set"""
     xs = list(iterable)
     return chain.from_iterable(combinations(xs, n) for n in range(len(xs) + 1))
+
+
+class SpecialNumbers:
+    """DOCSTRING"""
+
+    name = "SpecialNumbers"
+    example = "[literally anything?]"
+    formula = None
+    ordered = False
+    indexed = False
+    cardinality = None
+    cyclic = False
+
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def __repr__(self):
+        return self.example
+
+    def __getitem__(self, index):
+        if not self.indexed:
+            raise TypeError(f"{self.name} is not indexed")
+        if not self.cyclic:
+            if (index < 1) or (index % 1 != 0):
+                raise ValueError(f"{index = } must be a natrual number")
+        return self.nth(index)
+
+    def __gt__(self, other):
+        if not self.ordered:
+            raise TypeError(f"{self.name} is not ordered")
+        return self.value > other.value
+
+    def __lt__(self, other):
+        if not self.ordered:
+            raise TypeError(f"{self.name} is not ordered")
+        return self.value < other.value
+
+    def __ge__(self, other):
+        if not self.ordered:
+            raise TypeError(f"{self.name} is not ordered")
+        return self.value >= other.value
+
+    def __le__(self, other):
+        if not self.ordered:
+            raise TypeError(f"{self.name} is not ordered")
+        return self.value <= other.value
+
+    def __eq__(self, other):
+        if not self.ordered:
+            raise TypeError(f"{self.name} is not ordered")
+        return self.value == other.value
+
+    def size(self):
+        return self.cardinality
+
+    def getNext(self, n):
+        if not self.indexed:
+            raise TypeError(f"{self.name} is not indexed")
+        return self.nth(self.getIndex(n) + 1)
+
+    def errString(self, value):
+        return f"{value} is not a {self.name}. E.g. {self.example}"
+
+
+class Cardinalities(SpecialNumbers):
+    """docstring"""
+
+    name = "Cardinalities"
+    example = "[0 1 2 ... N0 N1 N2 ...]"
+    ordered = True
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(self, *args, **kwargs)
+
+    @staticmethod
+    def isCardinality(card: int or str) -> bool:
+        """return is card is a cardinality"""
+        if type(card) == str:
+            if len(card) < 2:
+                return False
+            if card[0] != "N":
+                return False
+            try:
+                int(card[1:])
+                return True
+            except:
+                return False
+        else:
+            return float(card).is_integer()
+
+    def __gt__(self, other):
+        if self.order != other.order:
+            return self.order > other.order
+        return self.value > other.value
+
+    def __lt__(self, other):
+        if self.order != other.order:
+            return self.order < other.order
+        return self.value < other.value
+
+    def __ge__(self, other):
+        if self.order != other.order:
+            return self.order > other.order
+        return self.value >= other.value
+
+    def __le__(self, other):
+        if self.order != other.order:
+            return self.order < other.order
+        return self.value <= other.value
+
+    def __eq__(self, other):
+        return (self.order == other.order) and (self.value == other.value)
+
+
+class Cardinality(Cardinalities):
+    """cardinality property"""
+
+    name = "Cardinality"
+
+    def __init__(self, cardinality, *args, **kwargs):
+        super().__init__(self, *args, **kwargs)
+        assert Cardinalities.isCardinality(cardinality), self.errString(cardinality)
+        if type(cardinality) == str:
+            self.order = 1
+            self.value = int(cardinality[1:])
+        else:
+            self.order = 0
+            self.value = cardinality
+
+    def __repr__(self):
+        string = "N" if self.order else ""
+        string += str(self.value)
+        return string
+
+
+class Ints(SpecialNumbers):
+    """integer type numbers"""
+
+    name = "Integers"
+    example = "[...-3 -2 -1 0 1 2 3...]"
+    ordered = True
+    cardinality = Cardinality("N0")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    @staticmethod
+    def isInt(n: Number) -> bool:
+        """returns if n is an Int"""
+        try:
+            return float(n).is_integer()
+        except:
+            return False
+
+
+class Int(Ints):
+    """a specific Integer"""
+
+    name = "Int"
+    cardinality = Cardinality(1)
+
+    def __init__(self, n: int, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        assert Ints.isInt(n), self.errString(n)
+        self.value = int(n)
+
+    def __repr__(self):
+        return str(self.value)
+
+
+class Naturals(Ints):
+    """natural number types"""
+
+    name = "Naturals"
+    example = "[0 1 2 3 ...]"
+    formula = "n"
+    indexed = True
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    @staticmethod
+    def isNatural(n: Number) -> bool:
+        """returns if n is a Natural number"""
+        return n >= 0
+
+    @staticmethod
+    def nth(n):
+        if (n < 0) or (n % 1 != 0):
+            raise ValueError(f"{n=} must be a natrual number")
+        return Natural(n)
+
+    def getIndex(self, n) -> int:
+        """gets the index of n"""
+        if type(n) == Natural:
+            n = n.value
+        if n % 1 == 0:
+            return int(n)
+        raise ValueError(self.errString(n))
+
+    @staticmethod
+    def inverseFormula(n):
+        return n
+
+
+class Natural(Int, Naturals):
+    """a particular natural number"""
+
+    name = "Natural"
+
+    def __init__(self, n: int, *args, **kwargs):
+        super().__init__(n=n, *args, **kwargs)
+        assert Naturals.isNatural(n), self.errString(n)
+        self.value = int(n)
+
+
+class TriangleNumbers(Naturals):
+    """triangle numbers"""
+
+    name = "Triangle Numbers"
+    example = "[1 3 6 10 ...]"
+    formula = "n*(n+1)/2"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    @staticmethod
+    def isTriangleNumber(n: Number) -> bool:
+        """returns if n is a Triangle Number"""
+        return TriangleNumbers.inverseFormula(n) % 1 == 0
+
+    @staticmethod
+    def nth(n: int):
+        """returns the nth Triangle Number"""
+        return TriangleNumber(int(n * (n + 1) / 2))
+
+    def getIndex(self, n) -> int:
+        """gets the index of n"""
+        if type(n) == TriangleNumber:
+            n = n.value
+        index = TriangleNumbers.inverseFormula(n)
+        if index % 1 == 0:
+            return int(index)
+        raise ValueError(self.errString(n))
+
+    @staticmethod
+    def inverseFormula(n):
+        return sqrt(2 * n + 1 / 4) - 1 / 2
+
+
+class TriangleNumber(TriangleNumbers, Natural):
+    """a particular triangle number"""
+
+    name = "Triangle Number"
+
+    def __init__(self, n: int, *args, **kwargs):
+        super().__init__(n=n, *args, **kwargs)
+        assert TriangleNumbers.isTriangleNumber(n), self.errString(n)
+        self.value = int(n)
+
+
+class SquareNumbers(Naturals):
+    """Square numbers"""
+
+    name = "Square Numbers"
+    example = "[1 4 9 16 ...]"
+    formula = "n*n"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    @staticmethod
+    def isSquareNumber(n: Number) -> bool:
+        """returns if n is a Square Number"""
+        return SquareNumbers.inverseFormula(n) % 1 == 0
+
+    @staticmethod
+    def nth(n: int):
+        """returns the nth Square Number"""
+        return SquareNumber(int(n * n))
+
+    def getIndex(self, n) -> int:
+        """gets the index of n"""
+        if type(n) == SquareNumber:
+            n = n.value
+        index = SquareNumbers.inverseFormula(n)
+        if index % 1 == 0:
+            return int(index)
+        raise ValueError(self.errString(n))
+
+    @staticmethod
+    def inverseFormula(n):
+        return sqrt(n)
+
+
+class SquareNumber(SquareNumbers, Natural):
+    """a particular Square number"""
+
+    name = "Square Number"
+
+    def __init__(self, n: int, *args, **kwargs):
+        super().__init__(n=n, *args, **kwargs)
+        assert SquareNumbers.isSquareNumber(n), self.errString(n)
+        self.value = int(n)
+
+
+class PentagonalNumbers(Naturals):
+    """Pentagonal numbers"""
+
+    name = "Pentagonal Numbers"
+    example = "[1 5 12 22 ...]"
+    formula = "n*(3*n-1)/2"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    @staticmethod
+    def isPentagonalNumber(n: Number) -> bool:
+        """returns if n is a Pentagonal Number"""
+        return PentagonalNumbers.inverseFormula(n) % 1 == 0
+
+    @staticmethod
+    def nth(n: int):
+        """returns the nth Pentagonal Number"""
+        return PentagonalNumber(int(n * (3 * n - 1) / 2))
+
+    def getIndex(self, n) -> int:
+        """gets the index of n"""
+        if type(n) == PentagonalNumber:
+            n = n.value
+        index = PentagonalNumbers.inverseFormula(n)
+        if index % 1 == 0:
+            return int(index)
+        raise ValueError(self.errString(n))
+
+    @staticmethod
+    def inverseFormula(n):
+        return (2 * sqrt(6 * n + 1 / 4) + 1) / 6
+
+
+class PentagonalNumber(PentagonalNumbers, Natural):
+    """a particular Pentagonal number"""
+
+    name = "Pentagonal Number"
+
+    def __init__(self, n: int, *args, **kwargs):
+        super().__init__(n=n, *args, **kwargs)
+        assert PentagonalNumbers.isPentagonalNumber(n), self.errString(n)
+        self.value = int(n)
+
+
+class HexagonalNumbers(Naturals):
+    """Hexagonal numbers"""
+
+    name = "Hexagonal Numbers"
+    example = "[1 6 15 28 ...]"
+    formula = "n*(2*n-1)"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    @staticmethod
+    def isHexagonalNumber(n: Number) -> bool:
+        """returns if n is a Hexagonal Number"""
+        return HexagonalNumbers.inverseFormula(n) % 1 == 0
+
+    @staticmethod
+    def nth(n: int):
+        """returns the nth Hexagonal Number"""
+        return HexagonalNumber(int(n * (2 * n - 1)))
+
+    def getIndex(self, n) -> int:
+        """gets the index of n"""
+        if type(n) == HexagonalNumber:
+            n = n.value
+        index = HexagonalNumbers.inverseFormula(n)
+        if index % 1 == 0:
+            return int(index)
+        raise ValueError(self.errString(n))
+
+    @staticmethod
+    def inverseFormula(n):
+        return sqrt(2 * n + 1 / 4) / 2 + 1 / 4
+
+
+class HexagonalNumber(HexagonalNumbers, Natural):
+    """a particular Hexagonal number"""
+
+    name = "Hexagonal Number"
+
+    def __init__(self, n: int, *args, **kwargs):
+        super().__init__(n=n, *args, **kwargs)
+        assert HexagonalNumbers.isHexagonalNumber(n), self.errString(n)
+        self.value = int(n)
+
+
+class HeptagonalNumbers(Naturals):
+    """Heptagonal numbers"""
+
+    name = "Heptagonal Numbers"
+    example = "[1 7 18 34 ...]"
+    formula = "n*(5*n-3)/2"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    @staticmethod
+    def isHeptagonalNumber(n: Number) -> bool:
+        """returns if n is a Heptagonal Number"""
+        return HeptagonalNumbers.inverseFormula(n) % 1 == 0
+
+    @staticmethod
+    def nth(n: int):
+        """returns the nth Heptagonal Number"""
+        return HeptagonalNumber(int(n * (5 * n - 3) / 2))
+
+    def getIndex(self, n) -> int:
+        """gets the index of n"""
+        if type(n) == HeptagonalNumber:
+            n = n.value
+        index = HeptagonalNumbers.inverseFormula(n)
+        if index % 1 == 0:
+            return int(index)
+        raise ValueError(self.errString(n))
+
+    @staticmethod
+    def inverseFormula(n):
+        return (2 * sqrt(10 * n + 9 / 4) + 3) / 10
+
+
+class HeptagonalNumber(HeptagonalNumbers, Natural):
+    """a particular Heptagonal number"""
+
+    name = "Heptagonal Number"
+
+    def __init__(self, n: int, *args, **kwargs):
+        super().__init__(n=n, *args, **kwargs)
+        assert HeptagonalNumbers.isHeptagonalNumber(n), self.errString(n)
+        self.value = int(n)
+
+
+class OctagonalNumbers(Naturals):
+    """Octagonal numbers"""
+
+    name = "Octagonal Numbers"
+    example = "[1 8 21 40 ...]"
+    formula = "n*(3*n-2)"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    @staticmethod
+    def isOctagonalNumber(n: Number) -> bool:
+        """returns if n is a Octagonal Number"""
+        return OctagonalNumbers.inverseFormula(n) % 1 == 0
+
+    @staticmethod
+    def nth(n: int):
+        """returns the nth Octagonal Number"""
+        return OctagonalNumber(int(n * (3 * n - 2)))
+
+    def getIndex(self, n) -> int:
+        """gets the index of n"""
+        if type(n) == OctagonalNumber:
+            n = n.value
+        index = OctagonalNumbers.inverseFormula(n)
+        if index % 1 == 0:
+            return int(index)
+        raise ValueError(self.errString(n))
+
+    @staticmethod
+    def inverseFormula(n):
+        return (sqrt(3 * n + 1) + 1) / 3
+
+
+class OctagonalNumber(OctagonalNumbers, Natural):
+    """a particular Octagonal number"""
+
+    name = "Octagonal Number"
+
+    def __init__(self, n: int, *args, **kwargs):
+        super().__init__(n=n, *args, **kwargs)
+        assert OctagonalNumbers.isOctagonalNumber(n), self.errString(n)
+        self.value = int(n)

@@ -117,15 +117,18 @@ def prime_factorization(n: int) -> Counter:
     if n == 2:
         return Counter([2])
     factors = []
-    p = 2
-    while n != 1:
-        if (p >= sqrt(n)) or (p == n):
+    index = 0
+    while n > 1:
+        p = P[index]
+        if (p > sqrt(n)) or (p == n):
             factors.append(n)
             n = 1
         while n % p == 0:
             factors.append(p)
             n = n // p
-        p = next_prime(p)
+        if n == 1:
+            break
+        index += 1
     return Counter(factors)
 
 
@@ -136,3 +139,7 @@ def num_from_pf_counter(pf_counter: Counter) -> int:
     for p in pf_counter:
         n *= int(p) ** pf_counter[p]
     return n
+
+
+def totient(n: int) -> set:
+    """returns all ints < n which are relatively prime to n"""

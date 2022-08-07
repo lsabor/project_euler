@@ -31,9 +31,9 @@ def iterable_product(iter) -> float:
 
 
 def smart_pf_counter(n, PF=None) -> Counter:
-    PF = PF if PF else Prime_Factorizations()
-    if len(PF) >= n:
-        return PF[n]
+    # PF = PF if PF else Prime_Factorizations()
+    # if len(PF) >= n:
+    # return PF[n]
     return primes.prime_factorization(n)
 
 
@@ -250,7 +250,7 @@ def tetrate(n, depth=2, mod=0):
 
     result = n
     for _ in range(depth - 1):
-        result = raise_power_modulo(result, n, mod=mod)
+        result = modex(result, n, mod=mod)
     return result
 
 
@@ -258,3 +258,16 @@ def powerset(iterable):
     """returns all subsets of a set"""
     xs = list(iterable)
     return chain.from_iterable(combinations(xs, n) for n in range(len(xs) + 1))
+
+
+def areRelativePrimes(n: int, m: int) -> bool:
+    """n and m are relatively prime if their gcf is 1"""
+    return gcf(n, m) == 1
+
+
+def totient(n: int) -> int:
+    """counts all ints < n which are relatively prime to n"""
+    count = 0
+    for m in range(1, n):
+        count += areRelativePrimes(n, m)
+    return count

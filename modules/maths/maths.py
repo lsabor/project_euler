@@ -3,26 +3,27 @@
 from numbers import Number
 from typing import Generator, Iterable, Mapping
 import primes
-from sequences import Prime_Factorizations
+
+# from sequences import Prime_Factorizations # TODO fixxxxx
 from collections import Counter
 from math import sqrt
 from functools import reduce
 from operator import add
-from itertools import permutations as perms
+from itertools import permutations as perms, product
 from itertools import chain, combinations
 
 
-def sum_consecutive_ints(n: int) -> int:
+def sumConsecutiveInts(n: int) -> int:
     # returns sum of consecutive ints up to and including n
     return int(n * (n + 1) / 2)
 
 
-def sum_squares(n_list: list) -> float:
+def sumSquares(n_list: list) -> float:
     # returns sum on squares of a list
     return sum([x**2 for x in n_list])
 
 
-def iterable_product(iter) -> float:
+def iterableProduct(iter) -> float:
     """returns the cumulative product of the iterable object given"""
     ip = 1
     for n in iter:
@@ -30,30 +31,30 @@ def iterable_product(iter) -> float:
     return ip
 
 
-def smart_pf_counter(n, PF=None) -> Counter:
+def smartPFCounter(n, PF=None) -> Counter:
     # PF = PF if PF else Prime_Factorizations()
     # if len(PF) >= n:
     # return PF[n]
     return primes.prime_factorization(n)
 
 
-def lcm_pf(*args: int, PF=None) -> Counter:
+def lcmPF(*args: int, PF=None) -> Counter:
     # returns the lcm as a prime factorization from a set of ints
-    counters = [smart_pf_counter(n, PF=PF) for n in args]
-    lcm_pf_counter = Counter()
+    counters = [smartPFCounter(n, PF=PF) for n in args]
+    lcmPFCounter = Counter()
     for c in counters:
-        lcm_pf_counter |= c
-    return lcm_pf_counter
+        lcmPFCounter |= c
+    return lcmPFCounter
 
 
 def lcm(*args: int, PF=None) -> int:
     # returns the lcm as an int from a set of ints
-    return primes.num_from_pf_counter(lcm_pf(*args, PF=PF))
+    return primes.numFromPFCounter(lcmPF(*args, PF=PF))
 
 
-def gcf_pf(*args: int, PF=None) -> Counter:
+def gcfPF(*args: int, PF=None) -> Counter:
     # returns the gcf as a prime factorization from a set of ints
-    counters = [smart_pf_counter(n, PF=PF) for n in args]
+    counters = [smartPFCounter(n, PF=PF) for n in args]
     gcf_pf_counter = Counter()
     for c in counters:
         gcf_pf_counter |= c
@@ -64,33 +65,33 @@ def gcf_pf(*args: int, PF=None) -> Counter:
 
 def gcf(*args: int, PF=None) -> int:
     # returns the gcf as an int from a set of ints
-    return primes.num_from_pf_counter(gcf_pf(*args, PF=PF))
+    return primes.numFromPFCounter(gcfPF(*args, PF=PF))
 
 
-def divisor_count_from_pf_counter(pf: Counter) -> int:
+def divisorCountFromPFCounter(pf: Counter) -> int:
     # returns a count of all the divisors from a prime factorization
-    prod = iterable_product(map(lambda x: x + 1, pf.values()))
+    prod = iterableProduct(map(lambda x: x + 1, pf.values()))
     return prod
 
 
-def divisor_count(n: int) -> int:
+def divisorCount(n: int) -> int:
     # returns a count of all the divisors of an integer
-    pf = smart_pf_counter(n)
-    return divisor_count_from_pf_counter(pf)
+    pf = smartPFCounter(n)
+    return divisorCountFromPFCounter(pf)
 
 
-def divisors_from_pf_counter(pf: Counter) -> list:
-    divs = [1]
-    tracker = dict(pf)
-    while max(tracker.values()) > 0:
-        divs.append(primes.num_from_pf_counter(tracker))
-        for factor in tracker:
-            if tracker[factor] > 0:
-                tracker[factor] -= 1
-                break
-            else:
-                tracker[factor] = pf[factor]
-    divs.sort()
+def divisorsFromPFCounter(pf: Counter) -> list:
+    if pf == Counter():
+        return [1]
+
+    divs = []
+    keys = list(pf.keys())
+    values = pf.values()
+    for factors in product(*[range(n + 1) for n in values]):
+        div = 1
+        for i, factor in enumerate(factors):
+            div *= int(keys[i]) ** factor
+        divs.append(div)
     return divs
 
 
@@ -98,31 +99,31 @@ def divisors(n: int) -> list:
     # returns all the divisors of an integer
     if n == 1:
         return [1]
-    pf = smart_pf_counter(n)
-    return divisors_from_pf_counter(pf)
+    pf = smartPFCounter(n)
+    return divisorsFromPFCounter(pf)
 
 
-def proper_divisors(n: int) -> list:
+def properDivisors(n: int) -> list:
     # returns divisors of n not including n
     return divisors(n)[:-1]
 
 
 def factorial(n: int) -> int:
     # == n!
-    return iterable_product(range(1, n + 1))
+    return iterableProduct(range(1, n + 1))
 
 
-def partial_factorial(n: int, k: int) -> int:
+def partialFactorial(n: int, k: int) -> int:
     # == n!/k!
-    return iterable_product(range(k + 1, n + 1))
+    return iterableProduct(range(k + 1, n + 1))
 
 
-def n_choose_k(n: int, k: int) -> int:
+def nChoosek(n: int, k: int) -> int:
     # == nCk
-    return partial_factorial(n, k) // factorial(n - k)
+    return partialFactorial(n, k) // factorial(n - k)
 
 
-def sum_of_digits(n: int) -> int:
+def sumOfDigits(n: int) -> int:
     # in base 10
     return sum([int(digit) for digit in str(n)])
 
@@ -143,7 +144,7 @@ def permutations(ls):
     return [ls]
 
 
-def string_permutations(string: str) -> Mapping:
+def stringPermutations(string: str) -> Mapping:
     """returns all permutations of a string"""
     return map(lambda x: reduce(add, x), perms(string))
 
@@ -167,7 +168,7 @@ def combinations(ls, n):
         return combs
 
 
-def square_root(n, precision=5):
+def squareRoot(n, precision=5):
     """finds the square root of n up to precision decimal places.
     This is just a proof of concept, just use math.sqrt"""
     if n < 0:
@@ -224,7 +225,7 @@ def floor(n):
     return int(n)
 
 
-def is_divisible(n: Number, d: Number) -> bool:
+def isDivisible(n: Number, d: Number) -> bool:
     """tests if n is divisible by d"""
     return n % d == 0
 

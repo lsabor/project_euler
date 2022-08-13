@@ -3,7 +3,7 @@
 import numpy as np
 
 
-def parse_mat_string(mat_string):
+def parseMatString(mat_string):
     # parses matrix from specific string notation
     if mat_string[0] == "0":  # fixes leading 0 issue
         mat_string == " " + mat_string
@@ -13,7 +13,7 @@ def parse_mat_string(mat_string):
     return matrix
 
 
-def get_std_diagonals(matrix):
+def getStdDiagonals(matrix):
     # gets diagonals from a matrix top left to bottom right
     diags = []
     n = matrix.shape[0]
@@ -24,9 +24,9 @@ def get_std_diagonals(matrix):
     return diags
 
 
-def get_all_diagonals(matrix):
+def getAllDiagonals(matrix):
     # gets all diagonals, starting with normal,
     # then top right to bottom left
-    diags = get_std_diagonals(matrix)
-    diags += get_std_diagonals(np.rot90(matrix))
+    diags = getStdDiagonals(matrix)
+    diags += getStdDiagonals(np.rot90(matrix))
     return diags

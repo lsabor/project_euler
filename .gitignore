@@ -1,6 +1,8 @@
 *.pyc
 *__pycache__
 /build*
+*.egg-info
+*.vscode
 
 # Large Files
 *Problem0477_Numbers.json

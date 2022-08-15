@@ -1,8 +1,9 @@
 graphs
+logs
 maths
 matrices
 parsing
 primes
 sequences
-sequences_compound
+sets
 trees

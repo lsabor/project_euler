@@ -2,14 +2,14 @@
 
 from numbers import Number
 from typing import Generator, Iterable, Mapping
-import primes
+from primes import primeFactorization, numFromPFCounter
 
 # from sequences import Prime_Factorizations # TODO fixxxxx
 from collections import Counter
-from math import sqrt
+from math import sqrt as square_root, ceil as ceiling, floor as get_floor
 from functools import reduce
 from operator import add
-from itertools import permutations as perms, product
+from itertools import permutations as perms, product, combinations as combs
 from itertools import chain, combinations
 
 
@@ -35,7 +35,7 @@ def smartPFCounter(n, PF=None) -> Counter:
     # PF = PF if PF else Prime_Factorizations()
     # if len(PF) >= n:
     # return PF[n]
-    return primes.prime_factorization(n)
+    return primeFactorization(n)
 
 
 def lcmPF(*args: int, PF=None) -> Counter:
@@ -49,7 +49,7 @@ def lcmPF(*args: int, PF=None) -> Counter:
 
 def lcm(*args: int, PF=None) -> int:
     # returns the lcm as an int from a set of ints
-    return primes.numFromPFCounter(lcmPF(*args, PF=PF))
+    return numFromPFCounter(lcmPF(*args, PF=PF))
 
 
 def gcfPF(*args: int, PF=None) -> Counter:
@@ -65,7 +65,7 @@ def gcfPF(*args: int, PF=None) -> Counter:
 
 def gcf(*args: int, PF=None) -> int:
     # returns the gcf as an int from a set of ints
-    return primes.numFromPFCounter(gcfPF(*args, PF=PF))
+    return numFromPFCounter(gcfPF(*args, PF=PF))
 
 
 def divisorCountFromPFCounter(pf: Counter) -> int:
@@ -128,9 +128,10 @@ def sumOfDigits(n: int) -> int:
     return sum([int(digit) for digit in str(n)])
 
 
-def permutations(ls):
+def permutations_custom(ls):
     """returns a list of all permutations of the list
     Just use itertools.permutations though, this is just a proof of concept"""
+    # TODO: make this a generator instead of list
     if len(ls) > 2:
         perms = []
         first = ls[0]
@@ -144,12 +145,17 @@ def permutations(ls):
     return [ls]
 
 
+def permutations(*args, **kwargs):
+    """returns itertools permutations"""
+    return perms(*args, **kwargs)
+
+
 def stringPermutations(string: str) -> Mapping:
     """returns all permutations of a string"""
     return map(lambda x: reduce(add, x), perms(string))
 
 
-def combinations(ls, n):
+def combinations_custom(ls, n):
     """just use itertools combinations though"""
     # returns a list of all combinations (in order of ls) of n elements from list
     length = len(ls)
@@ -168,7 +174,12 @@ def combinations(ls, n):
         return combs
 
 
-def squareRoot(n, precision=5):
+def combinations(*args, **kwargs):
+    """returns itertools combinations"""
+    return combs(*args, **kwargs)
+
+
+def sqrt_custom(n, precision=5):
     """finds the square root of n up to precision decimal places.
     This is just a proof of concept, just use math.sqrt"""
     if n < 0:
@@ -213,16 +224,31 @@ def squareRoot(n, precision=5):
     return round(r, precision)
 
 
-def ceil(n):
+def sqrt(*args, **kwargs):
+    """returns math.sqrt"""
+    return square_root(*args, **kwargs)
+
+
+def ceil_custom(n):
     """gets the ceiling of n"""
     if n % 1 == 0:
         return n
     return int(n) + 1
 
 
-def floor(n):
+def ceil(*args, **kwargs):
+    """returns math.ceil"""
+    return ceiling(*args, **kwargs)
+
+
+def floor_custom(n):
     """gets the floor of n"""
     return int(n)
+
+
+def floor(*args, **kwargs):
+    """returns math.floor"""
+    return get_floor(*args, **kwargs)
 
 
 def isDivisible(n: Number, d: Number) -> bool:
@@ -251,7 +277,7 @@ def tetrate(n, depth=2, mod=0):
 
     result = n
     for _ in range(depth - 1):
-        result = modex(result, n, mod=mod)
+        result = modex(result, n, m=mod)
     return result
 
 

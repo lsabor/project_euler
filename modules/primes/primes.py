@@ -3,16 +3,11 @@
 
 from collections import Counter
 from math import sqrt
-from sequences import PrimesSeq, isPrime as isP
+from sequences import PrimesSeq
+from sets import isPrime
 
 P = PrimesSeq()  # instantiate here so as not to reinstantiate each time
 # a primeFactorization is called
-
-
-def isPrime(n: int) -> bool:
-    """uses Miller-Rabin primality test
-    only effective up to 3,317,044,064,679,887,385,961,981"""
-    return isP(n)
 
 
 # def prev_prime(n) -> int:

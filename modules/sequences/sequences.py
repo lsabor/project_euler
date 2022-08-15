@@ -51,6 +51,10 @@ class Sequence(Set):
         # read cache file
         #
 
+    def set(self):
+        """returns self.seq as a set for easy lookup"""
+        return set(self.seq)
+
     def setupCache(self, action="x") -> TextIOWrapper:
         # simply generates the cache file if not already created
         if not os.path.exists(self.cache_file) and action not in ["w", "x"]:
@@ -278,7 +282,7 @@ class InvertableSequence(FormulaicSequence):
 
     def _isInSetSpecified(self, n: object) -> bool:
         index = self.inverseFormula(n)
-        return index and ((index % 1) == 0)
+        return (index is not None) and ((index % 1) == 0)
 
 
 class IterativeSequence(FormulaicSequence):

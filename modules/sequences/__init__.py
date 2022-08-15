@@ -2,7 +2,6 @@
 
 from sequences.sequences import *
 from sequences.special_sequences import *
-from sequences.compound.compound import *
 
 
 # import json

@@ -1,10 +1,10 @@
 """sequences that are a bit unusual"""
 
 from collections import Counter
-from primes import primeFactorization, numFromPFCounter, isPrime
+from primes import primeFactorization, numFromPFCounter
 
-from sequences import InvertableSequence
-from sets import PrimeFactorizations
+from sequences.sequences import InvertableSequence
+from sets import isPrime
 
 from maths import divisorsFromPFCounter, lcm
 from logs import log

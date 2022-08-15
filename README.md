@@ -30,13 +30,13 @@ File Structure:
   *    *    *  graphs.py
   *    *  ...  
   *    *  sequences/
-  *    *    *  __init__.py
+  *    *    *  \_\_init\_\_.py
   *    *    *  sequences.py
   *    *    *  special_sequences.py
   *    *    *  caches/    <- caches for high-compute sequences
   *    *    *    *   PrimesSequence.json
   *    *    *  compound/
-  *    *    *    *   __init__.py
+  *    *    *    *   \_\_init\_\_.py
   *    *    *    *   compound.py
   *    *  ...
   *  /000-100/  

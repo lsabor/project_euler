@@ -16,9 +16,9 @@ Started March 5, 2022
 Uses Python 3.10.0 or later  
 The intention is to proceed through problems 1-100 from archives https://projecteuler.net/archives/ in order. That may be subject to change.  
 
-Install directions:
-intended for `pipenv`
-run `pipenv install -e .`
+Install directions:  
+intended for `pipenv`  
+run `pipenv install -e .`  
 
 File Structure:  
 /project_euler
@@ -26,7 +26,7 @@ File Structure:
   *  requirements.txt  
   *  /modules/            <- helper modules that get used multiple times  
   *    *  graphs/
-  *    *    *  __init__.py
+  *    *    *  \_\_init\_\_.py
   *    *    *  graphs.py
   *    *  ...  
   *    *  sequences/

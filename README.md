@@ -24,22 +24,22 @@ File Structure:
 ```/project_euler
  ├── README.md  
  ├── requirements.txt  
- ├── /modules/            <- helper modules that get used multiple times  
+ ├── /modules/                            <- helper modules that get used multiple times  
  |   ├── graphs/  
- |   |   ├── \_\_init\_\_.py  
+ |   |   ├── __init__.py  
  |   |   └── graphs.py  
  |   ├── ...  
  |   ├── sequences/  
- |   |   ├── \_\_init\_\_.py  
+ |   |   ├── __init__.py  
  |   |   ├── sequences.py  
  |   |   ├── special_sequences.py  
- |   |   ├── caches/    <- caches for high-compute sequences  
+ |   |   ├── caches/                      <- caches for high-compute sequences  
  |   |   |   └──  PrimesSequence.json  
  |   |   └── compound/  
- |   |       ├──  \_\_init\_\_.py  
+ |   |       ├──  __init__.py  
  |   |       └──  compound.py  
  |   └── ...  
- └── /000-100/  
+ └── /000-100/                            <- solution files
      ├── /X0s/  
      |   ├── 0X0_ZZ_PROBLEM_NAME.ipynb    <- first three digits (0X0) indicate problem number, 
      |   |                                   next two (ZZ) indicate difficulty level (00-95)  

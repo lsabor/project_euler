@@ -21,7 +21,7 @@ intended for `pipenv`
 run `pipenv install -e .`  
 
 File Structure:  
-/project_euler
+```/project_euler
  ├── README.md  
  ├── requirements.txt  
  ├── /modules/            <- helper modules that get used multiple times  
@@ -50,6 +50,7 @@ File Structure:
      |   ├── ...  
      |   └── 019_ZZ_PROBLEM_NAME.ipynb  
      └── ...  
+```
 
 
 From the conditions of using the website, one cannot publish solutions to problems past problem 100.  

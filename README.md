@@ -41,7 +41,8 @@ File Structure:
  |   └── ...  
  └── /000-100/  
      ├── /X0s/  
-     |   ├── 0X0_ZZ_PROBLEM_NAME.ipynb    <- first three digits (0X0) indicate problem number, next two (ZZ) indicate difficulty level (00-95)  
+     |   ├── 0X0_ZZ_PROBLEM_NAME.ipynb    <- first three digits (0X0) indicate problem number, 
+     |   |                                   next two (ZZ) indicate difficulty level (00-95)  
      |   ├── 0X1_ZZ_PROBLEM_NAME.ipynb  
      |   ├── ...  
      |   └── 0X9_ZZ_PROBLEM_NAME.ipynb  

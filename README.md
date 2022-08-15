@@ -8,49 +8,48 @@ GitHub: @lsabor
 
 Co-authors (noted on specific problems):  
 Andrew Roberts - GitHub: @ajroberts0417  
+Geroge Jeffreys - georgej@bu.edu
+Michael Morgan
 
 Project details:  
 Started March 5, 2022  
 Uses Python 3.10.0 or later  
 The intention is to proceed through problems 1-100 from archives https://projecteuler.net/archives/ in order. That may be subject to change.  
 
+Install directions:
+intended for `pipenv`
+run `pipenv install -e .`
+
 File Structure:  
 /project_euler
   *  README.md  
   *  requirements.txt  
   *  /modules/            <- helper modules that get used multiple times  
-  *    *  sequences.py  
-  *    *  primes.py  
+  *    *  graphs/
+  *    *    *  __init__.py
+  *    *    *  graphs.py
   *    *  ...  
-  *    *  trees.py  
-  *  /caches/             <- caches for high-compute problems  
-  *    *  /sequences/  
-  *    *    *  Fibonacci.json  
-  *    *    *  Natural.json  
+  *    *  sequences/
+  *    *    *  __init__.py
+  *    *    *  sequences.py
+  *    *    *  special_sequences.py
+  *    *    *  caches/    <- caches for high-compute sequences
+  *    *    *    *   PrimesSequence.json
+  *    *    *  compound/
+  *    *    *    *   __init__.py
+  *    *    *    *   compound.py
+  *    *  ...
+  *  /000-100/  
+  *    *  /X0s/
+  *    *    *  0X0_ZZ_PROBLEM_NAME.ipynb    <- first three digits (0X0) indicate problem number, next two (ZZ) indicate difficulty level (00-95)
+  *    *    *  0X1_ZZ_PROBLEM_NAME.ipynb
   *    *    *  ...  
-  *    *    *  Triangle_Numbers.json  
-  *    *    *  /compound/  
-  *    *    *    *  Triangle_Numbers_Prime_Factorization.json  
-  *    *  /trees/  
-  *    *    *  Collatz.json  
-  *  /0X00s/  
-  *    *  /00X0s/
-  *    *    *  00X0.ipynb  <- example solution  
-  *    *    *  00X1.ipynb  <- solution to problem 1  
-  *    *    *  00X2.ipynb  
+  *    *    *  0X9_ZZ_PROBLEM_NAME.ipynb
+  *    *  /10s/
+  *    *    *  010_ZZ_PROBLEM_NAME.ipynb
   *    *    *  ...  
-  *    *    *  00X9.ipynb
-  *    *  /0010s/
-  *    *    *  0010.ipynb   
-  *    *    *  ...  
-  *    *    *  0019.ipynb  
+  *    *    *  019_ZZ_PROBLEM_NAME.ipynb
   *    *  ...  
-  *  /0100s/         <- this will only continue privately, see note below  
-  *    *  /0010s/
-  *    *    *  0100.ipynb  
-  *    *    *  ...  
-  *    *    *  0199.ipynb  
-  *  ...  
 
 
 From the conditions of using the website, one cannot publish solutions to problems past problem 100.  

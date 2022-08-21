@@ -1,9 +1,0 @@
-Metadata-Version: 2.1
-Name: project-euler
-Version: 0.0.0
-Summary: Solution code to the problem bank from https://projecteuler.net/
-Author: Luke Sabor
-License: MIT
-Classifier: Programming Language :: Python :: 3
-Requires-Python: >=3
-License-File: LICENSE

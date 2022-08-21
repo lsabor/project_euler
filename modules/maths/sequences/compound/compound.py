@@ -1,13 +1,13 @@
 """sequences that are a bit unusual"""
 
 from collections import Counter
-from primes import primeFactorization, numFromPFCounter
+from maths.primes import primeFactorization, numFromPFCounter
 
-from sequences.sequences import InvertableSequence
-from sets import isPrime
+from maths.sequences.sequences import InvertableSequence
+from maths.sets import isPrime
 
-from maths import divisorsFromPFCounter, lcm
-from logs import log
+from maths.math import divisorsFromPFCounter, lcm
+from maths.logs import log
 
 prefix = "compound/"
 

@@ -3,8 +3,8 @@
 
 from collections import Counter
 from math import sqrt
-from sequences import PrimesSeq
-from sets import isPrime
+from maths.sequences import PrimesSeq
+from maths.sets import isPrime
 
 P = PrimesSeq()  # instantiate here so as not to reinstantiate each time
 # a primeFactorization is called

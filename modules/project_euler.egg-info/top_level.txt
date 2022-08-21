@@ -1,9 +1,0 @@
-graphs
-logs
-maths
-matrices
-parsing
-primes
-sequences
-sets
-trees

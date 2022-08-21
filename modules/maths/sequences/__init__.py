@@ -1,7 +1,7 @@
 """This module holds basic sequence functions"""
 
-from sequences.sequences import *
-from sequences.special_sequences import *
+from maths.sequences.sequences import *
+from maths.sequences.special_sequences import *
 
 
 # import json
@@ -124,7 +124,7 @@ from sequences.special_sequences import *
 #         return self.next_item_batch[0]
 
 #     def next_item_batch(self):
-#         from primes import is_prime_single_check
+#         from maths.primes import is_prime_single_check
 
 #         current = self.seq[-1]
 #         print(current)
@@ -210,7 +210,7 @@ from sequences.special_sequences import *
 #         return self.next_item_batch[0]
 
 #     def next_item_batch(self):
-#         from primes import prime_factorization
+#         from maths.primes import prime_factorization
 
 #         return [prime_factorization(len(self) + n) for n in range(self.threshold)]
 
@@ -235,4 +235,4 @@ from sequences.special_sequences import *
 #         return [self.next_item()]
 
 
-# from sequences.compound import *
+# from maths.sequences.compound import *

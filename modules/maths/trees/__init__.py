@@ -58,10 +58,11 @@ class Tree:
         return rep
 
     def display_full(self):
+        raise NotImplementedError
         rep = ""
         display_list = [self.head]
         while display_list:
-            rep += f"\nTree Depth {i}:"
+            rep += f"\nTree Depth :"
             next_display_list = []
             for node in display_list:
                 rep += "\n\t\t" + node.__repr__()

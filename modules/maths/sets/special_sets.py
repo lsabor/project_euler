@@ -2,7 +2,7 @@
 
 
 from collections import Counter
-from sets.sets import *
+from maths.sets.sets import *
 
 
 def isPrime(n: int) -> bool:
@@ -48,7 +48,7 @@ def isPrime(n: int) -> bool:
         s += 1
         d //= 2
 
-    from maths import modex
+    from maths.math import modex
 
     # Testing
     for a in bases:

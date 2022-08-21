@@ -5,7 +5,7 @@ is a subsequence"""
 from maths.sequences.sequences import *
 from maths.sets import *
 from math import log as ln
-from math import ceil, sqrt
+from maths.math import ceil, sqrt
 from decimal import Decimal
 
 

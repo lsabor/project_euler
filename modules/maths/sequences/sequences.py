@@ -189,7 +189,7 @@ class TestOnlySequence(Sequence):
     def nextToTest(self, obj: object) -> object:
         ...
 
-    def testUpTo(self, n: int) -> object:
+    def testUpTo(self, n: int):
         l = len(self.seq)
         if n < l:
             return

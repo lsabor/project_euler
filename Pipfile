@@ -4,11 +4,13 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-jupyter = "*"
-numpy = "*"
-black = "*"
-project-euler = {editable = true, path = "."}
 ipykernel = "*"
+jupyter = "*"
+black = "*"
+numpy = "*"
+project-euler = {editable = true, path = "."}
+pytest = "*"
+pytest-mock = "*"
 
 [dev-packages]
 

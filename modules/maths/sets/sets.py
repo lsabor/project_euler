@@ -16,6 +16,7 @@ class Set:
     cardinality = None
     cyclic = False
     cached = False
+    datatypes = [object]
 
     @log
     def __init__(self, *args, **kwargs):
@@ -49,6 +50,14 @@ class Set:
     def isInSet(self, n: object) -> bool:
         """returns if n is a in the Set by testing the _isInSet methods for each class"""
         loglevel = "DEBUG"
+
+        # first check for valid data type
+        if not any(isinstance(n, dtype) for dtype in self.datatypes):
+            level_map[loglevel](
+                f"{n} (type: {type(n)}) not valid datatype for {self.name}"
+            )
+            return False
+
         # we will start with the highest parent class, and test each on the way down
         # this is because the most basic class tests are usually simplest and
         # the reasons for failing will be the most useful
@@ -56,6 +65,9 @@ class Set:
         # first run though _isInSet from highest to lowest level
         # then same through _isInSetSpecified since Specified version is
         # definied above the set in question, but is most specific
+
+        in_set = False
+
         for _inSetTestName in ["_isInSet", "_isInSetSpecified"]:
             for klass in self.__class__.__mro__[::-1]:
                 if _isInSet := getattr(klass, _inSetTestName, None):
@@ -76,7 +88,7 @@ class Set:
                                     f"{n} not in {klass.name}, thus not in {self.name}"
                                 )
                             return False
-        return True
+        return in_set
 
     @classmethod
     def getValue(self, n: Number | object) -> object:
@@ -103,24 +115,26 @@ class Cardinalities(Set):
     name = "Cardinalities"
     example = "[0 1 2 ... N N0 N1 N2 ...]"
     ordered = True
+    datatypes = [str, int, float, Set]
 
     @classmethod
     def _isInSet(klass, n: int | str) -> bool:
         """return if n is a cardinality"""
-        if type(n) == type(klass):
-            return (klass.order in [0, 1]) and (isinstance(klass.value, int))
+        if isinstance(n, klass):
+            return True
         if type(n) == str:
             if not n or n[0] != "N":
                 return False
             if len(n) == 1:
                 return True
             try:
-                int(n[1:])
-                return True
+                f = float(n[1:])
+                return f.is_integer() and (f >= 0)
             except:
                 return False
         else:
-            return float(n).is_integer()
+            f = float(n)
+            return f.is_integer() and f >= 0
 
     def __gt__(self, other) -> bool:
         if not isinstance(other, type(self)):
@@ -146,7 +160,7 @@ class Cardinality(Cardinalities):
     def __init__(self, cardinality: int | str, *args, **kwargs):
         """cardinality must be either an int or
         string begining with N ending in '' or a number"""
-        assert self.isInSet(cardinality), self.errString(cardinality)
+        assert self.isInSet(cardinality), f"FAILED {cardinality} not valid cardinality"
         if type(cardinality) == str:
             self.order = 1
             self.value = -1 if len(cardinality) == 1 else int(cardinality[1:])

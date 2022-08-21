@@ -8,10 +8,10 @@ from maths.sets.sets import *
 def isPrime(n: int) -> bool:
     """uses Miller-Rabin primality test
     only effective up to 3,317,044,064,679,887,385,961,981"""
-    if (n < 2) or (n % 2 == 0):
-        return False
     if n == 2:
         return True
+    if (n < 2) or (n % 2 == 0):
+        return False
     if n < 2047:
         bases = [2]
     elif n < 1373653:
@@ -70,15 +70,13 @@ class Ints(Set):
     example = "{... -2 -1 0 1 2 ...}"
     ordered = True
     cardinality = Cardinality("N0")
+    datatypes = [int, float]
 
     @classmethod
-    def _isInSet(self, n: Number) -> bool:
+    def _isInSet(klass, n: Number) -> bool:
         """return if n passes the test unique to Ints
         but not classes it inherits from"""
-        try:
-            return float(n).is_integer()
-        except:
-            return False
+        return float(n).is_integer()
 
 
 class Naturals(Ints):
@@ -88,10 +86,10 @@ class Naturals(Ints):
     example = "{0 1 2 3 ...}"
 
     @classmethod
-    def _isInSet(self, n: Number) -> bool:
+    def _isInSet(klass, n: Number) -> bool:
         """return if n passes the test unique to Natural numbers
         but not classes it inherits from"""
-        return n >= 0
+        return float(n) >= 0
 
 
 class Primes(Naturals):
@@ -105,8 +103,8 @@ class Primes(Naturals):
         return isPrime(n)
 
     @classmethod
-    def _isInSet(self, n: Number) -> bool:
-        return self.isPrime(n)
+    def _isInSet(klass, n: Number) -> bool:
+        return klass.isPrime(n)
 
 
 class PrimeFactorizations(Set):
@@ -114,3 +112,8 @@ class PrimeFactorizations(Set):
 
     name = "PrimeFactorizations"
     example = "{Counter({}) Counter({}) Counter({2:1}) Counter({3:1}) ...}"
+    datatypes = [Counter]
+
+    @classmethod
+    def _isInSet(klass, counter: Counter) -> bool:
+        return all([Primes._isInSet(n) for n in counter])

@@ -4,7 +4,7 @@
 from io import TextIOWrapper
 from typing import Iterable, Iterator
 from xml.etree.ElementInclude import include
-from sets import *
+from maths.sets import *
 
 import json
 import os

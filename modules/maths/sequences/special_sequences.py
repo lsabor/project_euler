@@ -2,8 +2,8 @@
 any sequence that inherits from another sequences
 is a subsequence"""
 
-from sequences.sequences import *
-from sets import *
+from maths.sequences.sequences import *
+from maths.sets import *
 from math import log as ln
 from math import ceil, sqrt
 from decimal import Decimal

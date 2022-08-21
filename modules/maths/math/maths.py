@@ -2,9 +2,9 @@
 
 from numbers import Number
 from typing import Generator, Iterable, Mapping
-from primes import primeFactorization, numFromPFCounter
+from maths.primes import primeFactorization, numFromPFCounter
 
-# from sequences import Prime_Factorizations # TODO fixxxxx
+# from maths.sequences import Prime_Factorizations # TODO fixxxxx
 from collections import Counter
 from math import sqrt as square_root, ceil as ceiling, floor as get_floor
 from functools import reduce

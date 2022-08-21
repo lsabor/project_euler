@@ -2,7 +2,7 @@
 
 import inspect
 from numbers import Number
-from logs import *
+from maths.logs import *
 from functools import partial
 
 

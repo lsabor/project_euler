@@ -294,7 +294,8 @@ def areRelativePrimes(n: int, m: int) -> bool:
 
 def totient(n: int) -> int:
     """counts all ints < n which are relatively prime to n"""
-    count = 0
-    for m in range(1, n):
-        count += areRelativePrimes(n, m)
-    return count
+    factors = primeFactorization(n)
+    count = n
+    for p in factors:
+        count *= 1 - (1 / p)
+    return int(count)

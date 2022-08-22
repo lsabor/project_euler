@@ -1,18 +1,23 @@
 """sequences that are a bit unusual"""
 
 from collections import Counter
-from maths.primes import primeFactorization, numFromPFCounter
 
-from maths.sequences.sequences import InvertableSequence
-from maths.sets import isPrime
-
-from maths.math import divisorsFromPFCounter, lcm
 from maths.logs import log
+from maths.sets import PrimeFactorizations
+from maths.primes import (
+    primeFactorization,
+    isPrime,
+    numFromCounter,
+    divisorsFromPFCounter,
+    lcm,
+)
+from maths.sequences import InvertableSequence
+
 
 prefix = "compound/"
 
 
-class PrimeFactorSeq(InvertableSequence):
+class PrimeFactorSeq(PrimeFactorizations, InvertableSequence):
     """Prime Factorizations as a sequence"""
 
     name = prefix + "PrimeFactorSequence"
@@ -28,12 +33,7 @@ class PrimeFactorSeq(InvertableSequence):
     @staticmethod
     def inverseFormula(n: Counter) -> int:
         """returns the index of the primeFactorization"""
-        return numFromPFCounter(n)
-
-    @classmethod
-    def _isInSet(self, n: Counter) -> bool:
-        """returns if n is a prime factorization of a natural number"""
-        return all(map(isPrime, n))
+        return numFromCounter(n)
 
 
 class DivisorSeq(InvertableSequence):
@@ -44,6 +44,7 @@ class DivisorSeq(InvertableSequence):
     first_value = Counter()
     cached = True
     PFS = PrimeFactorSeq()
+    datatypes = [list]
 
     @classmethod
     def formula(klass, n: int) -> list[int]:
@@ -53,7 +54,6 @@ class DivisorSeq(InvertableSequence):
         return divisorsFromPFCounter(klass.PFS.seq[n])
 
     @staticmethod
-    @log(level="CRITICAL")
     def inverseFormula(n: list[int]) -> int:
         """returns n from a list of divisors"""
         return lcm(*n)

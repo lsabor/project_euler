@@ -112,6 +112,7 @@ class PrimeFactorizations(Set):
 
     name = "PrimeFactorizations"
     example = "{Counter({}) Counter({}) Counter({2:1}) Counter({3:1}) ...}"
+    cardinality = Cardinality("N0")
     datatypes = [Counter]
 
     @classmethod

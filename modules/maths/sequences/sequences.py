@@ -29,77 +29,79 @@ class Sequence(Set):
     example = "[s1 s2 s3 ...]"
     indexed = True
     cardinality = Cardinality("N0")
+    local_caching = False
     first_value = ...
     monotonic = 0
 
     @log
-    def __init__(
-        self, seq: list[object] = None, local_caching: bool = False, *args, **kwargs
-    ):
+    def __init__(self, seq: list[object] = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.comparitor = self.cardinality  # TODO this doesn't belong here
-        self.seq = seq or [self.first_value]
-        self.local_caching = local_caching  # set this if recomputing is expensive,
-        # but not worth permanent caching
+        self.seq = seq or ([self.first_value] if not self.first_value is ... else [])
 
         if self.cached:
             self.cache_file = cache_folder + self.name + ".json"
-            self.seq = self.readCache() or self.seq
-        # TODO: implement caching
-        # if cached, then:
-        # set up cache file
-        # read cache file
-        #
+            cached_seq = self.readCache()
+            self.seq = cached_seq or self.seq
+            if not cached_seq:
+                self.expandCache()
 
     def set(self):
         """returns self.seq as a set for easy lookup"""
         return set(self.seq)
 
-    def setupCache(self, action="x") -> TextIOWrapper:
+    def _setupCache(self, action="x") -> TextIOWrapper:
         # simply generates the cache file if not already created
         if not os.path.exists(self.cache_file) and action not in ["w", "x"]:
             cache = open(self.cache_file, "x")
             cache.close()
 
-    def deserialize(self, cache: str) -> list[object]:
+    def _deserialize(self, cache: str) -> list[object]:
         """generic deserialization, overwrite for custom situations"""
         if data := cache.read():
             return json.loads(data)
         return []
 
-    def serialize(self, data: list[object] = None) -> str:
+    def _serialize(self, data: list[object] = None) -> str:
         """generic serialization, overwrite for custom situations"""
         if not data:
             data = self.seq
         return json.dumps(data)
 
     def readCache(self) -> list[object]:
-        self.setupCache("r")
+        """entry point to read from cache"""
+        self._setupCache("r")
         with open(self.cache_file, "r") as cache:
-            deserialization = self.deserialize(cache)
+            deserialization = self._deserialize(cache)
         return deserialization
 
-    def overwriteCache(self, data: list[object] = None):
+    def _overwriteCache(self, data: list[object] = None):
         """overwrites the serialization to the cache file"""
-        self.setupCache("w")
+        self._setupCache("w")
         with open(self.cache_file, "w") as cache:
-            cache.write(self.serialize(data))
+            cache.write(self._serialize(data))
 
     def concatenateCache(self, data: list[object]):
         """appends the serialization to the cache file"""
         raise NotImplementedError
-        self.setupCache("a")
+        self._setupCache("a")
         with open(self.cache_file, "a") as cache:
-            cache.write(self.serialize(data))
+            cache.write(self._serialize(data))
 
     def expandCache(self):
         """makes decision about how to expand the cache.
         Default is full overwrite"""
-        self.overwriteCache()
+        self._overwriteCache()
+
+    def destroyCache(self):
+        """destroys Cache"""
+        if os.path.exists(self.cache_file):
+            os.remove(self.cache_file)
 
     def resetCache(self):
         """overwrites current Cache with nothing"""
-        self.setupCace(action="w")
+        self.destroyCache()
+        self._setupCache()
 
     def __getitem__(self, key: int | slice) -> Number | list[object]:
         return self.seq.__getitem__(key)
@@ -117,12 +119,15 @@ class Sequence(Set):
             raise StopIteration
 
     def yieldWhile(self, include_condition, last_index=200000) -> Iterator[object]:
+        # TODO change typing, Iterator[object] is not correct
         index = 0
         if not self.seq:
             raise ValueError(f"sequence is empty")
-        while include_condition(self[index]):
-            yield self[index]
-            index += 1
+        iter_seq = iter(self)
+        value = next(iter_seq)
+        while include_condition(value):
+            yield value
+            value = next(iter_seq)
 
     def takeWhile(self, include_condition, last_index=200000, threshold=None) -> list:
         """takes values from seq until condition fails"""
@@ -149,7 +154,6 @@ class Sequence(Set):
                             )
                         index = last_index
                 index //= 2
-        index += direction
         if direction:
             while include_condition(self[index], threshold):
                 index += 1
@@ -182,7 +186,7 @@ class TestOnlySequence(Sequence):
     local_caching = True
 
     @log
-    def __init__(self, init_len: int = 1, *args, **kwargs):
+    def __init__(self, init_len: int = 0, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.seq = self.seq if len(self.seq) > init_len else self[:init_len]
 
@@ -193,7 +197,7 @@ class TestOnlySequence(Sequence):
         l = len(self.seq)
         if n < l:
             return
-        current = self.seq[-1]
+        current = self.seq[-1] if self.seq else self.first_value
         new_vals = []
         while l < n:
             current = self.nextToTest(current)
@@ -204,7 +208,7 @@ class TestOnlySequence(Sequence):
         self.seq += new_vals
         if self.cached:
             logger.debug(f" Extending cached seq of {self.name}")
-            self.overwriteCache()
+            self.expandCache()
 
     def __getitem__(self, key):
         slicekey = slicify(key)
@@ -236,10 +240,11 @@ class FormulaicSequence(Sequence):
         ...
 
     def __getitem__(self, key: int | slice) -> object | list[object]:
-        # TODO: takes too long - maybe remove the log?
         slicekey = slicify(key)
         idxs = slicekey.indices(slicekey.stop)
-        if slicekey.stop <= len(self.seq):
+        if idxs[0] == idxs[1] and isinstance(key, slice):
+            return []
+        if self.seq and slicekey.stop <= len(self.seq):
             return super().__getitem__(key)
         elif self.local_caching or self.cached:
             self.seq = self[: idxs[0]] + [self.formula(i) for i in range(*idxs[:2])]
@@ -248,7 +253,11 @@ class FormulaicSequence(Sequence):
             return super().__getitem__(key)
         else:
             result = [self.formula(i) for i in range(*idxs)]
-            return result if (len(result) > 1) else next(iter(result), None)
+            return (
+                result
+                if (len(result) > 1) or isinstance(key, slice)
+                else next(iter(result), None)
+            )
 
 
 class InvertableSequence(FormulaicSequence):
@@ -261,6 +270,10 @@ class InvertableSequence(FormulaicSequence):
     def inverseFormula(self, n: object) -> int:
         ...
 
+    def _isInSetSpecified(self, n: object) -> bool:
+        index = self.inverseFormula(n)
+        return (index is not None) and ((index % 1) == 0)
+
     def getIndex(self, n: object) -> int:
         """gets the index of n"""
         self.test(n)
@@ -268,21 +281,15 @@ class InvertableSequence(FormulaicSequence):
 
     def getNext(self, n: object) -> object:
         """gets the succeeding value of n"""
-        self.test(n)
         index = self.getIndex(n)
-        return self.formula(n + 1)
+        return self.formula(index + 1)
 
     def getPrevious(self, n: object) -> object:
         """gets the succeeding value of n"""
-        self.test(n)
         index = self.getIndex(n)
         if index == 0:
             raise ValueError(f"There is no predecessor to {n=} in {self.name}")
-        return self.formula(n - 1)
-
-    def _isInSetSpecified(self, n: object) -> bool:
-        index = self.inverseFormula(n)
-        return (index is not None) and ((index % 1) == 0)
+        return self.formula(index - 1)
 
 
 class IterativeSequence(FormulaicSequence):
@@ -291,6 +298,7 @@ class IterativeSequence(FormulaicSequence):
 
     name = "IterativeSequence"
     example = "[f(0) f(f(0)) f(f(f(0))) ...]"
+    local_caching = True
 
     def getNext(self, n: object, *args, **kwargs) -> object:
         ...
@@ -302,7 +310,7 @@ class IterativeSequence(FormulaicSequence):
         return self.getNext(self.formula(n - 1))
 
 
-class InverseIterativeSequence(IterativeSequence):
+class InverseIterativeSequence(IterativeSequence, InvertableSequence):
     """a sequence where nth element is computer from previous element(s) and vice versa
     must define getNext and getPrevious methods"""
 
@@ -314,7 +322,11 @@ class InverseIterativeSequence(IterativeSequence):
 
     def inverseFormula(self, n: object) -> int:
         index = 0
+        vals = [n]
         while n != self.first_value:
             index += 1
             n = self.getPrevious(n)
+            vals.append(n)
+        if self.local_caching and len(vals) > len(self.seq):
+            self.seq = list(reversed(vals))
         return index

@@ -20,7 +20,8 @@ class Set:
 
     @log
     def __init__(self, *args, **kwargs):
-        ...
+        for key in kwargs:
+            setattr(self, key, kwargs[key])
 
     def __gt__(self, other) -> bool:
         if not self.ordered:

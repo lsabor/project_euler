@@ -2,15 +2,21 @@
 
 from numbers import Number
 from typing import Generator, Iterable, Mapping
-from maths.primes import primeFactorization, numFromPFCounter
 
-# from maths.sequences import Prime_Factorizations # TODO fixxxxx
 from collections import Counter
-from math import sqrt as square_root, ceil as ceiling, floor as get_floor
+from math import sqrt as square_root, ceil as ceiling, floor as get_floor, prod
 from functools import reduce
 from operator import add
-from itertools import permutations as perms, product, combinations as combs
-from itertools import chain, combinations
+from itertools import (
+    permutations as perms,
+    combinations as combs,
+    chain,
+    product as ittproduct,
+)
+
+from maths.sets import Naturals
+
+N = Naturals()
 
 
 def sumConsecutiveInts(n: int) -> int:
@@ -23,7 +29,7 @@ def sumSquares(n_list: list) -> float:
     return sum([x**2 for x in n_list])
 
 
-def iterableProduct(iter) -> float:
+def iterableProduct_custom(iter) -> float:
     """returns the cumulative product of the iterable object given"""
     ip = 1
     for n in iter:
@@ -31,81 +37,13 @@ def iterableProduct(iter) -> float:
     return ip
 
 
-def smartPFCounter(n, PF=None) -> Counter:
-    # PF = PF if PF else Prime_Factorizations()
-    # if len(PF) >= n:
-    # return PF[n]
-    return primeFactorization(n)
+def iterableProduct(iter) -> float:
+    """returns the cumulative product of the iterable object given"""
+    return prod(iter)
 
 
-def lcmPF(*args: int, PF=None) -> Counter:
-    # returns the lcm as a prime factorization from a set of ints
-    counters = [smartPFCounter(n, PF=PF) for n in args]
-    lcmPFCounter = Counter()
-    for c in counters:
-        lcmPFCounter |= c
-    return lcmPFCounter
-
-
-def lcm(*args: int, PF=None) -> int:
-    # returns the lcm as an int from a set of ints
-    return numFromPFCounter(lcmPF(*args, PF=PF))
-
-
-def gcfPF(*args: int, PF=None) -> Counter:
-    # returns the gcf as a prime factorization from a set of ints
-    counters = [smartPFCounter(n, PF=PF) for n in args]
-    gcf_pf_counter = Counter()
-    for c in counters:
-        gcf_pf_counter |= c
-    for c in counters:
-        gcf_pf_counter &= c
-    return gcf_pf_counter
-
-
-def gcf(*args: int, PF=None) -> int:
-    # returns the gcf as an int from a set of ints
-    return numFromPFCounter(gcfPF(*args, PF=PF))
-
-
-def divisorCountFromPFCounter(pf: Counter) -> int:
-    # returns a count of all the divisors from a prime factorization
-    prod = iterableProduct(map(lambda x: x + 1, pf.values()))
-    return prod
-
-
-def divisorCount(n: int) -> int:
-    # returns a count of all the divisors of an integer
-    pf = smartPFCounter(n)
-    return divisorCountFromPFCounter(pf)
-
-
-def divisorsFromPFCounter(pf: Counter) -> list:
-    if pf == Counter():
-        return [1]
-
-    divs = []
-    keys = list(pf.keys())
-    values = pf.values()
-    for factors in product(*[range(n + 1) for n in values]):
-        div = 1
-        for i, factor in enumerate(factors):
-            div *= int(keys[i]) ** factor
-        divs.append(div)
-    return divs
-
-
-def divisors(n: int) -> list:
-    # returns all the divisors of an integer
-    if n == 1:
-        return [1]
-    pf = smartPFCounter(n)
-    return divisorsFromPFCounter(pf)
-
-
-def properDivisors(n: int) -> list:
-    # returns divisors of n not including n
-    return divisors(n)[:-1]
+def product(*args, **kwargs):
+    return ittproduct(*args, **kwargs)
 
 
 def factorial(n: int) -> int:
@@ -152,7 +90,7 @@ def permutations(*args, **kwargs):
 
 def stringPermutations(string: str) -> Mapping:
     """returns all permutations of a string"""
-    return map(lambda x: reduce(add, x), perms(string))
+    return map(lambda x: reduce(add, x), permutations(string))
 
 
 def combinations_custom(ls, n):
@@ -183,7 +121,7 @@ def sqrt_custom(n, precision=5):
     """finds the square root of n up to precision decimal places.
     This is just a proof of concept, just use math.sqrt"""
     if n < 0:
-        raise ValueError("cannot square root numbers less than 0 with this function")
+        raise TypeError("cannot square root numbers less than 0 with this function")
     if n == 0:
         return 0
     if n == 1:
@@ -260,6 +198,8 @@ def modex(b, e, m):
     """returns n to the xth power modulo mod at each step"""
     if m == 1:
         return 0
+    if m == 0:
+        return b**e
     result = 1
     b %= m
     while e:
@@ -273,11 +213,11 @@ def modex(b, e, m):
 def tetrate(n, depth=2, mod=0):
     """gives the tetration depth levels deep of n"""
     if (not depth) or (depth % 1 != 0):
-        raise ValueError("depth must be an integer greater than 0")
+        raise TypeError("depth must be an integer greater than 0")
 
     result = n
     for _ in range(depth - 1):
-        result = modex(result, n, m=mod)
+        result = modex(n, result, m=mod)
     return result
 
 
@@ -285,17 +225,3 @@ def powerset(iterable):
     """returns all subsets of a set"""
     xs = list(iterable)
     return chain.from_iterable(combinations(xs, n) for n in range(len(xs) + 1))
-
-
-def areRelativePrimes(n: int, m: int) -> bool:
-    """n and m are relatively prime if their gcf is 1"""
-    return gcf(n, m) == 1
-
-
-def totient(n: int) -> int:
-    """counts all ints < n which are relatively prime to n"""
-    factors = primeFactorization(n)
-    count = n
-    for p in factors:
-        count *= 1 - (1 / p)
-    return int(count)

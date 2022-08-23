@@ -5,8 +5,11 @@ is a subsequence"""
 from maths.sequences.sequences import *
 from maths.sets import *
 from math import log as ln
-from math import ceil, sqrt
-from decimal import Decimal
+from maths.math import ceil, sqrt
+import decimal
+
+decimal.getcontext().prec = 230
+Decimal = decimal.Decimal
 
 
 class IntsSeq(Ints, InvertableSequence):
@@ -180,7 +183,8 @@ class OctagonalNumbers(NatsSeq):
 
 
 class Fibonacci(NatsSeq):
-    """Fibonacci numbers"""
+    """Fibonacci numbers, breaks at index = 1085
+    if needed, increase decimal precision"""
 
     name = "FibonacciNumbers"
     example = "[1 1 2 3 5 8 13 ...]"
@@ -189,18 +193,22 @@ class Fibonacci(NatsSeq):
     @staticmethod
     def formula(n: int) -> int:
         """returns the nth fibonacci number"""
+        n = Decimal(str(n))
         if n < 2:
             return 1
-        Phi = (1 + sqrt(5)) / 2
-        phi = (1 - sqrt(5)) / 2
-        f = (Phi ** (n + 1) + phi ** (n + 1)) / sqrt(5)
+        Phi = (Decimal("1") + Decimal("5").sqrt()) / Decimal("2")
+        phi = (Decimal("1") - Decimal("5").sqrt()) / Decimal("2")
+        f = (Phi ** (n + Decimal("1")) + phi ** (n + Decimal("1"))) / Decimal(
+            "5"
+        ).sqrt()
         return round(f)
 
     @staticmethod
     def inverseFormula(f: int) -> int:
         """returns n from a given fibonnaci number f"""
-        Phi = (1 + sqrt(5)) / 2
-        n = ceil(ln(f * sqrt(5) - 0.5, Phi))
+        f = Decimal(str(f))
+        Phi = (Decimal("1") + Decimal("5").sqrt()) / Decimal("2")
+        n = ceil(ln(f * Decimal("5").sqrt() - Decimal("0.5"), Phi))
         return n - 1
 
     def _isInSetSpecified(self, n: int) -> bool:

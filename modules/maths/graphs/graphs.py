@@ -1,6 +1,11 @@
 """This module holds basic graph functions"""
 
 
+def nodify(array) -> list:
+    node_array = [[Node(val) for val in row] for row in array]
+    return node_array
+
+
 class Node:
     """the basic atom of a graph"""
 
@@ -12,6 +17,9 @@ class Node:
 
     def __repr__(self):
         return str(self.value)
+
+    def __eq__(self, other):
+        return self.value == other.value and self.flag == other.flag
 
     def getAdjacentEdges(self) -> set["Edge"]:
         return self.outbound.union(self.in_bound)
@@ -40,6 +48,15 @@ class Edge:
                 init_tag = "<"
                 last_tag = "-"
         return f'{self.node0} {init_tag}{self.length if self.length else ""}{last_tag} {self.node1}'
+
+    def __eq__(self, other):
+        return all(
+            [
+                self.getDestinies() == other.getDestinies(),
+                self.getGenesises() == other.getGenesises(),
+                self.flag == other.flag,
+            ]
+        )
 
     def getDestinies(self) -> set[Node]:
         """returns the nodes which are in the direction of the edge"""
@@ -397,8 +414,3 @@ class Graph:
                     clique.add(node)
                     cliques.append(clique)
         return cliques
-
-
-def nodify(array) -> list:
-    node_array = [[Node(val) for val in row] for row in array]
-    return node_array

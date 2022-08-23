@@ -1,18 +1,22 @@
 """sequences that are a bit unusual"""
 
 from collections import Counter
-from maths.primes import primeFactorization, numFromPFCounter
+import json
 
-from maths.sequences.sequences import InvertableSequence
-from maths.sets import isPrime
+from maths.sets import PrimeFactorizations
+from maths.primes import (
+    primeFactorization,
+    numFromCounter,
+    divisors,
+    lcm,
+)
+from maths.sequences import InvertableSequence
 
-from maths.math import divisorsFromPFCounter, lcm
-from maths.logs import log
 
 prefix = "compound/"
 
 
-class PrimeFactorSeq(InvertableSequence):
+class PrimeFactorSeq(PrimeFactorizations, InvertableSequence):
     """Prime Factorizations as a sequence"""
 
     name = prefix + "PrimeFactorSequence"
@@ -28,32 +32,41 @@ class PrimeFactorSeq(InvertableSequence):
     @staticmethod
     def inverseFormula(n: Counter) -> int:
         """returns the index of the primeFactorization"""
-        return numFromPFCounter(n)
+        return numFromCounter(n)
 
-    @classmethod
-    def _isInSet(self, n: Counter) -> bool:
-        """returns if n is a prime factorization of a natural number"""
-        return all(map(isPrime, n))
+    def _counterize_dict(self, entry):
+        return Counter({int(key): value for key, value in entry.items()})
+
+    def _deserialize(self, cache: str) -> list[object]:
+        """overwrite of _deserialize method"""
+        if data := cache.read():
+            loaded_data = json.loads(data)
+            return list(map(self._counterize_dict, loaded_data))
+        return []
+
+    def _serialize(self, data: list[object] = None) -> str:
+        """overwrite of _serialize method"""
+        if not data:
+            data = self.seq
+        return json.dumps(data)
 
 
 class DivisorSeq(InvertableSequence):
     """Divisors as a sequence"""
 
     name = prefix + "DivisorSequence"
-    example = "[Counter({}) Counter({2:1}) Counter({3:1}) ...]"
-    first_value = Counter()
+    example = "[[] [1] [1, 2] [1, 3] [1, 2, 4]...]"
+    first_value = []
     cached = True
     PFS = PrimeFactorSeq()
+    datatypes = [list]
 
     @classmethod
     def formula(klass, n: int) -> list[int]:
         """returns the list of divisors of n"""
-        if len(klass.PFS.seq) < n:
-            klass.PFS[n]
-        return divisorsFromPFCounter(klass.PFS.seq[n])
+        return divisors(n)
 
     @staticmethod
-    @log(level="CRITICAL")
     def inverseFormula(n: list[int]) -> int:
         """returns n from a list of divisors"""
         return lcm(*n)

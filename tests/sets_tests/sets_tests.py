@@ -63,7 +63,7 @@ class TestSet:
         isInSet = mocker.patch.object(default_set, "isInSet")
         isInSet.return_value = not xerror
         if xerror:
-            with pytest.raises(ValueError):
+            with pytest.raises(TypeError):
                 default_set.test(1)
         else:
             default_set.test(1)

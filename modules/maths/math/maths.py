@@ -9,6 +9,10 @@ from functools import reduce
 from operator import add
 from itertools import permutations as perms, combinations as combs, chain
 
+from maths.sets import Naturals
+
+N = Naturals()
+
 
 def sumConsecutiveInts(n: int) -> int:
     # returns sum of consecutive ints up to and including n
@@ -108,7 +112,7 @@ def sqrt_custom(n, precision=5):
     """finds the square root of n up to precision decimal places.
     This is just a proof of concept, just use math.sqrt"""
     if n < 0:
-        raise ValueError("cannot square root numbers less than 0 with this function")
+        raise TypeError("cannot square root numbers less than 0 with this function")
     if n == 0:
         return 0
     if n == 1:
@@ -200,7 +204,7 @@ def modex(b, e, m):
 def tetrate(n, depth=2, mod=0):
     """gives the tetration depth levels deep of n"""
     if (not depth) or (depth % 1 != 0):
-        raise ValueError("depth must be an integer greater than 0")
+        raise TypeError("depth must be an integer greater than 0")
 
     result = n
     for _ in range(depth - 1):

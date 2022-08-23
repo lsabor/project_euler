@@ -18,7 +18,7 @@ def slicify(key: int | slice) -> slice:
         return key
     elif isinstance(key, int):
         return slice(key, key + 1, 1)
-    raise ValueError(f"{key=} must be a slice or int")
+    raise TypeError(f"{key=} must be a slice or int")
 
 
 class Sequence(Set):
@@ -121,7 +121,7 @@ class Sequence(Set):
         # TODO change typing, Iterator[object] is not correct
         index = 0
         if not self.seq:
-            raise ValueError(f"sequence is empty")
+            raise TypeError(f"sequence is empty")
         iter_seq = iter(self)
         value = next(iter_seq)
         while include_condition(value):
@@ -139,7 +139,7 @@ class Sequence(Set):
                 # we have an appoximation algorithm about how many items to take
                 index = approxCount(threshold)
                 if index > last_index:
-                    raise ValueError(f"condition always satisifed before {last_index=}")
+                    raise IndexError(f"condition always satisifed before {last_index=}")
                 if not include_condition(self[index], threshold):
                     direction = -1
             else:
@@ -148,7 +148,7 @@ class Sequence(Set):
                     index = 2 * index if index else 1
                     if index > last_index:
                         if index == 2 * last_index:
-                            raise ValueError(
+                            raise IndexError(
                                 f"condition always satisifed before {last_index=}"
                             )
                         index = last_index

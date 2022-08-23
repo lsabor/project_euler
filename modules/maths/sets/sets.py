@@ -45,7 +45,7 @@ class Set:
         elif self.cardinality.order == 0:
             return self.cardinality.value
         else:
-            raise ValueError(f"Sets of size {self.cardinality} do not have a length.")
+            raise TypeError(f"Sets of size {self.cardinality} do not have a length.")
 
     @log
     def isInSet(self, n: object) -> bool:
@@ -102,9 +102,9 @@ class Set:
         return self.cardinality
 
     def test(self, n, **kwargs) -> None:
-        """raises ValueError if not isInSet(n)"""
+        """raises TypeError if not isInSet(n)"""
         if not self.isInSet(n, **kwargs):
-            raise ValueError(f"{n} is not in {self.name}. E.g. {self.example}")
+            raise TypeError(f"{n} is not in {self.name}. E.g. {self.example}")
 
 
 class Cardinalities(Set):

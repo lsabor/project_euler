@@ -89,19 +89,15 @@ class TestHelpers:
     """testing helper functions"""
 
     @pytest.mark.parametrize(
-        "key,xresult",
+        "input,xoutput",
         [
             (slice(1, 6, 2), slice(1, 6, 2)),
             (5, slice(5, 6, 1)),
-            (1.32, ValueError),
+            (1.32, TypeError),
         ],
     )
-    def test_slicify(self, key, xresult):
-        if xresult is ValueError:
-            with pytest.raises(ValueError):
-                slicify(key)
-        else:
-            assert slicify(key) == xresult
+    def test_slicify(self, output_or_error, input, xoutput):
+        output_or_error(slicify, input, xoutput)
 
 
 class TestSequence:

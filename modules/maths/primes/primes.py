@@ -17,7 +17,7 @@ def primeFactorization(n: int) -> Counter:
     e.g. 28 -> Counter({2:2,7:1})"""
 
     if (n < 0) or (n % 1 != 0):
-        raise ValueError(f"cannot prime factorize {n} - not a natural number")
+        raise TypeError(f"cannot prime factorize {n} - not a natural number")
     if n in (0, 1):
         return Counter()
     if n == 2:
@@ -57,6 +57,8 @@ def smartPFCounter(n, PF=None) -> Counter:
 
 def totient(n: int) -> int:
     """counts all ints < n which are relatively prime to n"""
+    if n == 1:
+        return 0
     factors = primeFactorization(n)
     count = n
     for p in factors:
@@ -64,7 +66,7 @@ def totient(n: int) -> int:
     return int(count)
 
 
-def lcmPF(*args: int, PF=None) -> Counter:
+def lcmPF(*args, PF=None) -> Counter:
     # returns the lcm as a prime factorization from a set of ints
     counters = [smartPFCounter(n, PF=PF) for n in args]
     lcmPFCounter = Counter()
@@ -73,12 +75,12 @@ def lcmPF(*args: int, PF=None) -> Counter:
     return lcmPFCounter
 
 
-def lcm(*args: int, PF=None) -> int:
+def lcm(*args, PF=None) -> int:
     # returns the lcm as an int from a set of ints
     return numFromCounter(lcmPF(*args, PF=PF))
 
 
-def gcfPF(*args: int, PF=None) -> Counter:
+def gcfPF(*args, PF=None) -> Counter:
     # returns the gcf as a prime factorization from a set of ints
     counters = [smartPFCounter(n, PF=PF) for n in args]
     gcf_pf_counter = Counter()
@@ -89,7 +91,7 @@ def gcfPF(*args: int, PF=None) -> Counter:
     return gcf_pf_counter
 
 
-def gcf(*args: int, PF=None) -> int:
+def gcf(*args, PF=None) -> int:
     # returns the gcf as an int from a set of ints
     return numFromCounter(gcfPF(*args, PF=PF))
 

@@ -12,12 +12,13 @@ class Test_Helpers:
         "input,xoutput",
         [
             (0, 0),
+            (1.0, 1),
             (4, 10),
             (100, 5050),
         ],
     )
-    def test_sumConsecutiveInts(self, input, xoutput):
-        assert sumConsecutiveInts(input) == xoutput
+    def test_sumConsecutiveInts(self, output_or_error, input, xoutput):
+        output_or_error(sumConsecutiveInts, input, xoutput)
 
     @pytest.mark.parametrize(
         "input,xoutput",
@@ -28,8 +29,8 @@ class Test_Helpers:
             ([5, -10, 15], 350),
         ],
     )
-    def test_sumSquares(self, input, xoutput):
-        assert sumSquares(input) == xoutput
+    def test_sumSquares(self, output_or_error, input, xoutput):
+        output_or_error(sumSquares, input, xoutput)
 
     @pytest.mark.parametrize(
         "input,xoutput",
@@ -40,8 +41,8 @@ class Test_Helpers:
             (20, 2432902008176640000),
         ],
     )
-    def test_factorial(self, input, xoutput):
-        assert factorial(input) == xoutput
+    def test_factorial(self, output_or_error, input, xoutput):
+        output_or_error(factorial, input, xoutput)
 
     @pytest.mark.parametrize(
         "input,xoutput",
@@ -52,8 +53,8 @@ class Test_Helpers:
             ((12, 7), 95040),
         ],
     )
-    def test_partialFactorial(self, input, xoutput):
-        assert partialFactorial(*input) == xoutput
+    def test_partialFactorial(self, output_or_error, input, xoutput):
+        output_or_error(partialFactorial, input, xoutput)
 
     @pytest.mark.parametrize(
         "input,xoutput",
@@ -65,8 +66,8 @@ class Test_Helpers:
             ((12, 7), 792),
         ],
     )
-    def test_nChoosek(self, input, xoutput):
-        assert nChoosek(*input) == xoutput
+    def test_nChoosek(self, output_or_error, input, xoutput):
+        output_or_error(nChoosek, input, xoutput)
 
     @pytest.mark.parametrize(
         "input,xoutput",
@@ -77,8 +78,8 @@ class Test_Helpers:
             (9736247, 38),
         ],
     )
-    def test_sumOfDigits(self, input, xoutput):
-        assert sumOfDigits(input) == xoutput
+    def test_sumOfDigits(self, output_or_error, input, xoutput):
+        output_or_error(sumOfDigits, input, xoutput)
 
     @pytest.mark.parametrize(
         "input,xoutput",
@@ -88,8 +89,8 @@ class Test_Helpers:
             ("BBE", ["BBE", "BEB", "BBE", "BEB", "EBB", "EBB"]),
         ],
     )
-    def test_stringPermutations(self, input, xoutput):
-        assert list(stringPermutations(input)) == xoutput
+    def test_stringPermutations(self, output_or_error, input, xoutput):
+        output_or_error(lambda x: list(stringPermutations(x)), input, xoutput)
 
     @pytest.mark.parametrize(
         "input,xoutput",
@@ -101,8 +102,8 @@ class Test_Helpers:
             ((456874563, 456967832135, 1234511), 757980),
         ],
     )
-    def test_modex(self, input, xoutput):
-        assert modex(*input) == xoutput
+    def test_modex(self, output_or_error, input, xoutput):
+        output_or_error(modex, input, xoutput)
 
     @pytest.mark.parametrize(
         "input,xoutput",
@@ -112,8 +113,8 @@ class Test_Helpers:
             ((5, 4, 12389), 11770),
         ],
     )
-    def test_tetrate(self, input, xoutput):
-        assert tetrate(*input) == xoutput
+    def test_tetrate(self, output_or_error, input, xoutput):
+        output_or_error(tetrate, input, xoutput)
 
     @pytest.mark.parametrize(
         "input,xoutput",
@@ -124,5 +125,5 @@ class Test_Helpers:
             ([1, 2, 3], [(), (1,), (2,), (3,), (1, 2), (1, 3), (2, 3), (1, 2, 3)]),
         ],
     )
-    def test_powerset(self, input, xoutput):
-        assert list(powerset(input)) == xoutput
+    def test_powerset(self, output_or_error, input, xoutput):
+        output_or_error(lambda x: list(powerset(x)), input, xoutput)

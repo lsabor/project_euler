@@ -8,8 +8,8 @@ GitHub: @lsabor
 
 Co-authors (noted on specific problems):  
 Andrew Roberts - GitHub: @ajroberts0417  
-Geroge Jeffreys - georgej@bu.edu
-Michael Morgan
+Geroge Jeffreys - georgej@bu.edu  
+Michael Morgan - GitHub: @msmorgan  
 
 Project details:  
 Started March 5, 2022  
@@ -20,11 +20,13 @@ Install directions:
 intended for `pipenv`  
 run `pipenv install -e .`  
 
+_______________________________________________________________
+
 File Structure:  
 ```/project_euler
  ├── README.md  
  ├── requirements.txt  
- ├── /modules/                            <- helper modules that get used multiple times  
+ ├── /modules/maths/                      <- helper modules that get used multiple times  
  |   ├── graphs/  
  |   |   ├── __init__.py  
  |   |   └── graphs.py  

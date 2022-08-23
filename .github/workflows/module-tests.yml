@@ -1,0 +1,64 @@
+name: module-tests
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches: 
+      - main
+
+jobs:
+
+  test-modules:
+    name: module-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      # Setup Python (faster than using Python container)
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+
+      - name: Install pipenv
+        uses: dschep/install-pipenv-action@v1
+
+      - name: Install Dependencies
+        env:
+          PIPENV_NOSPIN: 'true'
+          WORKON_HOME: ~/.pipenv/virtualenvs
+          # PIPENV_CACHE_DIR: ~/.pipenv/pipcache
+        run: pipenv install -e .
+        if: steps.pipenv-cache.outputs.cache-hit != 'true'
+
+      - name: TESTS
+        run: |
+          make test-modules
+
+  # run-linters:
+  #   name: Run linters
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Check out Git repository
+  #       uses: actions/checkout@v2
+
+  #     # Setup Python (faster than using Python container)
+  #     - name: Setup Python
+  #       uses: actions/setup-python@v2
+  #       with:
+  #         python-version: "3.9"
+
+  #     - name: Install Python dependencies
+  #       run: pip install black flake8
+
+  #     - name: Run linters
+  #       uses: wearerequired/lint-action@v2
+  #       with:
+  #         black: true
+  #         flake8: true

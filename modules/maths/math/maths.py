@@ -4,7 +4,7 @@ from numbers import Number
 from typing import Generator, Iterable, Mapping
 
 from collections import Counter
-from math import sqrt as square_root, ceil as ceiling, floor as get_floor
+from math import sqrt as square_root, ceil as ceiling, floor as get_floor, prod
 from functools import reduce
 from operator import add
 from itertools import permutations as perms, combinations as combs, chain
@@ -20,12 +20,17 @@ def sumSquares(n_list: list) -> float:
     return sum([x**2 for x in n_list])
 
 
-def iterableProduct(iter) -> float:
+def iterableProduct_custom(iter) -> float:
     """returns the cumulative product of the iterable object given"""
     ip = 1
     for n in iter:
         ip *= n
     return ip
+
+
+def iterableProduct(iter) -> float:
+    """returns the cumulative product of the iterable object given"""
+    return prod(iter)
 
 
 def factorial(n: int) -> int:
@@ -72,7 +77,7 @@ def permutations(*args, **kwargs):
 
 def stringPermutations(string: str) -> Mapping:
     """returns all permutations of a string"""
-    return map(lambda x: reduce(add, x), perms(string))
+    return map(lambda x: reduce(add, x), permutations(string))
 
 
 def combinations_custom(ls, n):
@@ -180,6 +185,8 @@ def modex(b, e, m):
     """returns n to the xth power modulo mod at each step"""
     if m == 1:
         return 0
+    if m == 0:
+        return b**e
     result = 1
     b %= m
     while e:
@@ -197,7 +204,7 @@ def tetrate(n, depth=2, mod=0):
 
     result = n
     for _ in range(depth - 1):
-        result = modex(result, n, m=mod)
+        result = modex(n, result, m=mod)
     return result
 
 

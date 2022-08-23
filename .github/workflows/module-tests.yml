@@ -29,9 +29,9 @@ jobs:
         uses: dschep/install-pipenv-action@v1
 
       - name: Install Dependencies
-        env:
-          PIPENV_NOSPIN: 'true'
-          WORKON_HOME: ~/.pipenv/virtualenvs
+        # env:
+        #   PIPENV_NOSPIN: 'true'
+        #   WORKON_HOME: ~/.pipenv/virtualenvs
         run: 
           pipenv install --dev
           pipenv install .
@@ -39,7 +39,7 @@ jobs:
 
       - name: TESTS
         run:
-          make test-modules
+          pipenv run pytest tests/module_tests
 
   # run-linters:
   #   name: Run linters

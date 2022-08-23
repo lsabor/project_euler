@@ -32,7 +32,9 @@ jobs:
         env:
           PIPENV_NOSPIN: 'true'
           WORKON_HOME: ~/.pipenv/virtualenvs
-        run: pipenv install .
+        run: 
+          pipenv install --dev
+          pipenv install .
         if: steps.pipenv-cache.outputs.cache-hit != 'true'
 
       - name: TESTS

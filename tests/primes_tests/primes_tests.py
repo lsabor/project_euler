@@ -1,4 +1,4 @@
-"""tests for math"""
+"""tests for primes"""
 
 import pytest
 from collections import Counter
@@ -7,7 +7,7 @@ from maths.primes import *
 
 
 class Test_Helpers:
-    """tests helper fxns in maths.py"""
+    """tests helper fxns in primes.py"""
 
     @pytest.mark.parametrize(
         "input,xoutput",

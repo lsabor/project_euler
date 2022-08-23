@@ -79,7 +79,6 @@ class Test_Fibonacci:
     def test_initiate(self):
         Fibonacci()
 
-    @pytest.mark.current
     def test_values(self, fibonacci):
         assert fibonacci[:9] == [1, 1, 2, 3, 5, 8, 13, 21, 34]
         assert not fibonacci.isInSet(573147844013817084100)

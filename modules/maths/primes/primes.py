@@ -118,12 +118,12 @@ def divisorsFromPFCounter(pf: Counter) -> list:
         for i, factor in enumerate(factors):
             div *= int(keys[i]) ** factor
         divs.append(div)
-    return divs
+    return sorted(divs)
 
 
 def divisors(n: int) -> list:
     # returns all the divisors of an integer
-    if n == 1:
+    if n <= 1:  # really, if n = 0, divisors = all natural numbers
         return [1]
     pf = smartPFCounter(n)
     return divisorsFromPFCounter(pf)

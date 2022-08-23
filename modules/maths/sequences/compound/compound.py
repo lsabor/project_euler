@@ -1,14 +1,13 @@
 """sequences that are a bit unusual"""
 
 from collections import Counter
+import json
 
-from maths.logs import log
 from maths.sets import PrimeFactorizations
 from maths.primes import (
     primeFactorization,
-    isPrime,
     numFromCounter,
-    divisorsFromPFCounter,
+    divisors,
     lcm,
 )
 from maths.sequences import InvertableSequence
@@ -35,13 +34,29 @@ class PrimeFactorSeq(PrimeFactorizations, InvertableSequence):
         """returns the index of the primeFactorization"""
         return numFromCounter(n)
 
+    def _counterize_dict(self, entry):
+        return Counter({int(key): value for key, value in entry.items()})
+
+    def _deserialize(self, cache: str) -> list[object]:
+        """generic deserialization, overwrite for custom situations"""
+        if data := cache.read():
+            loaded_data = json.loads(data)
+            return list(map(self._counterize_dict, loaded_data))
+        return []
+
+    def _serialize(self, data: list[object] = None) -> str:
+        """generic serialization, overwrite for custom situations"""
+        if not data:
+            data = self.seq
+        return json.dumps(data)
+
 
 class DivisorSeq(InvertableSequence):
     """Divisors as a sequence"""
 
     name = prefix + "DivisorSequence"
-    example = "[Counter({}) Counter({2:1}) Counter({3:1}) ...]"
-    first_value = Counter()
+    example = "[[] [1] [1, 2] [1, 3] [1, 2, 4]...]"
+    first_value = []
     cached = True
     PFS = PrimeFactorSeq()
     datatypes = [list]
@@ -49,9 +64,7 @@ class DivisorSeq(InvertableSequence):
     @classmethod
     def formula(klass, n: int) -> list[int]:
         """returns the list of divisors of n"""
-        if len(klass.PFS.seq) < n:
-            klass.PFS[n]
-        return divisorsFromPFCounter(klass.PFS.seq[n])
+        return divisors(n)
 
     @staticmethod
     def inverseFormula(n: list[int]) -> int:

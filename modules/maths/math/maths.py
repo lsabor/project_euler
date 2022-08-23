@@ -7,7 +7,12 @@ from collections import Counter
 from math import sqrt as square_root, ceil as ceiling, floor as get_floor, prod
 from functools import reduce
 from operator import add
-from itertools import permutations as perms, combinations as combs, chain
+from itertools import (
+    permutations as perms,
+    combinations as combs,
+    chain,
+    product as ittproduct,
+)
 
 from maths.sets import Naturals
 
@@ -35,6 +40,10 @@ def iterableProduct_custom(iter) -> float:
 def iterableProduct(iter) -> float:
     """returns the cumulative product of the iterable object given"""
     return prod(iter)
+
+
+def product(*args, **kwargs):
+    return ittproduct(*args, **kwargs)
 
 
 def factorial(n: int) -> int:

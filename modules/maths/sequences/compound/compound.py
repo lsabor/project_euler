@@ -38,14 +38,14 @@ class PrimeFactorSeq(PrimeFactorizations, InvertableSequence):
         return Counter({int(key): value for key, value in entry.items()})
 
     def _deserialize(self, cache: str) -> list[object]:
-        """generic deserialization, overwrite for custom situations"""
+        """overwrite of _deserialize method"""
         if data := cache.read():
             loaded_data = json.loads(data)
             return list(map(self._counterize_dict, loaded_data))
         return []
 
     def _serialize(self, data: list[object] = None) -> str:
-        """generic serialization, overwrite for custom situations"""
+        """overwrite of _serialize method"""
         if not data:
             data = self.seq
         return json.dumps(data)

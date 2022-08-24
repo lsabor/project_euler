@@ -25,7 +25,9 @@ from maths.primes import primeFactorization
 # solution
 
 
-def solution():
+def solution(bypass=False):
+    if bypass:
+        return ANSWER
     n = 600851475143
 
     pf = primeFactorization(n)
@@ -33,4 +35,4 @@ def solution():
 
 
 if __name__ == "__main__":
-    solution()
+    solution(bypass=False)

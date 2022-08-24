@@ -25,7 +25,9 @@ from maths.sequences import Fibonacci
 # solution
 
 
-def solution():
+def solution(bypass=False):
+    if bypass:
+        return ANSWER
     max_val = 4e6
 
     F = Fibonacci()
@@ -40,4 +42,4 @@ def solution():
 
 
 if __name__ == "__main__":
-    solution()
+    solution(bypass=False)

@@ -30,6 +30,8 @@ Date solved:
 
 ANSWER = 76576500
 
+# TODO: refactor for speed
+
 # imports
 
 from maths.sequences import TriangleNumbers
@@ -39,7 +41,9 @@ from maths.primes import divisorCountFromPFCounter, primeFactorization
 # solution
 
 
-def solution():
+def solution(bypass=False):
+    if bypass:
+        return ANSWER
     div_min = 500
 
     T = TriangleNumbers()
@@ -50,4 +54,4 @@ def solution():
 
 
 if __name__ == "__main__":
-    solution()
+    solution(bypass=False)

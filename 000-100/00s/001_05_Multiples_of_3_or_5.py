@@ -24,7 +24,9 @@ from maths.math import sumConsecutiveInts
 # solution
 
 
-def solution():
+def solution(bypass=False):
+    if bypass:
+        return ANSWER
     max_val = 1000
 
     mults_3 = set(range(max_val)[::3])
@@ -36,4 +38,4 @@ def solution():
 
 
 if __name__ == "__main__":
-    solution()
+    solution(bypass=False)

@@ -25,7 +25,9 @@ from maths.math import nChoosek
 # solution
 
 
-def solution():
+def solution(bypass=False):
+    if bypass:
+        return ANSWER
     # in a square lattice path, to get from the top left to bottom right,
     # at each intersection you can choose to go down or right
     # thus, of the 40 moves you make, you have to choose
@@ -39,4 +41,4 @@ def solution():
 
 
 if __name__ == "__main__":
-    solution()
+    solution(bypass=False)

@@ -35,7 +35,7 @@ jobs:
 
       - name: Run tests
         run:
-          make group=test_00s.py test-answers
+          make test-answers group=00s.py
 
   test_answers_10s:
     name: answers-10s
@@ -62,7 +62,34 @@ jobs:
 
       - name: Run tests
         run:
-          make group=test_10s.py test-answers
+          make test-answers group=10s.py
+  
+  test_answers_20s:
+    name: answers-20s
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+
+      - name: Install pipenv
+        uses: dschep/install-pipenv-action@v1
+
+      - name: Install Dependencies
+        run: 
+          pipenv install --dev
+          pipenv install .
+        if: steps.pipenv-cache.outputs.cache-hit != 'true'
+
+      - name: Run tests
+        run:
+          make test-answers group=20s.py
 
   # run-linters:
   #   name: Run linters

@@ -35,7 +35,7 @@ jobs:
 
       - name: Run tests
         run:
-          make group=test_00s test-answers
+          make group=test_00s.py test-answers
 
   test_answers_10s:
     name: answers-10s
@@ -62,7 +62,7 @@ jobs:
 
       - name: Run tests
         run:
-          make group=test_10s test-answers
+          make group=test_10s.py test-answers
 
   # run-linters:
   #   name: Run linters

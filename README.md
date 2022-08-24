@@ -18,7 +18,7 @@ The intention is to proceed through problems 1-100 from archives https://project
 
 Install directions:  
 intended for `pipenv`  
-run `pipenv install -e .`  
+run `pipenv install --dev`  
 
 _______________________________________________________________
 

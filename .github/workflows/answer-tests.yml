@@ -1,4 +1,4 @@
-name: module-tests
+name: answer-tests
 
 on:
   pull_request:
@@ -10,8 +10,8 @@ on:
 
 jobs:
 
-  test-modules:
-    name: module-tests
+  test_answers_00s:
+    name: answers-00s
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -35,7 +35,34 @@ jobs:
 
       - name: Run tests
         run:
-          make test-modules
+          make group=test_00s test-answers
+
+  test_answers_10s:
+    name: answers-10s
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+
+      - name: Install pipenv
+        uses: dschep/install-pipenv-action@v1
+
+      - name: Install Dependencies
+        run: 
+          pipenv install --dev
+          pipenv install .
+        if: steps.pipenv-cache.outputs.cache-hit != 'true'
+
+      - name: Run tests
+        run:
+          make group=test_10s test-answers
 
   # run-linters:
   #   name: Run linters

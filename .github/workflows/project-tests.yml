@@ -166,31 +166,83 @@ jobs:
         run:
           make test-answers group=40s.py
 
-  # test_answers_50s:
-  #   name: answers-50s
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 10
+  test_answers_50s:
+    name: answers-50s
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
 
-  #   steps:
-  #     - name: Check out repository code
-  #       uses: actions/checkout@v2
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
 
-  #     - name: Setup Python
-  #       uses: actions/setup-python@v2
-  #       with:
-  #         python-version: "3.10"
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
 
-  #     - name: Install pipenv
-  #       uses: dschep/install-pipenv-action@v1
+      - name: Install pipenv
+        uses: dschep/install-pipenv-action@v1
 
-  #     - name: Install Dependencies
-  #       run: 
-  #         pipenv install --dev --skip-lock
-  #       if: steps.pipenv-cache.outputs.cache-hit != 'true'
+      - name: Install Dependencies
+        run: 
+          pipenv install --dev --skip-lock
+        if: steps.pipenv-cache.outputs.cache-hit != 'true'
 
-  #     - name: Run tests
-  #       run:
-  #         make test-answers group=50s.py
+      - name: Run tests
+        run:
+          make test-answers group=50s.py
+  
+  test_answers_60s:
+    name: answers-60s
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+
+      - name: Install pipenv
+        uses: dschep/install-pipenv-action@v1
+
+      - name: Install Dependencies
+        run: 
+          pipenv install --dev --skip-lock
+        if: steps.pipenv-cache.outputs.cache-hit != 'true'
+
+      - name: Run tests
+        run:
+          make test-answers group=60s.py
+  
+  test_answers_70s:
+    name: answers-70s
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10"
+
+      - name: Install pipenv
+        uses: dschep/install-pipenv-action@v1
+
+      - name: Install Dependencies
+        run: 
+          pipenv install --dev --skip-lock
+        if: steps.pipenv-cache.outputs.cache-hit != 'true'
+
+      - name: Run tests
+        run:
+          make test-answers group=70s.py
 
   # run-linters:
   #   name: Run linters

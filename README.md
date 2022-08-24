@@ -23,10 +23,11 @@ run `pipenv install --dev`
 _______________________________________________________________
 
 File Structure:  
-```/project_euler
+```
+/project_euler/
  ├── README.md  
  ├── requirements.txt  
- ├── /modules/maths/                      <- helper modules that get used multiple times  
+ ├── maths/                               <- helper modules that get used multiple times  
  |   ├── graphs/  
  |   |   ├── __init__.py  
  |   |   └── graphs.py  
@@ -41,17 +42,25 @@ File Structure:
  |   |       ├──  __init__.py  
  |   |       └──  compound.py  
  |   └── ...  
- └── /000-100/                            <- solution files
-     ├── /X0s/  
-     |   ├── 0X0_ZZ_PROBLEM_NAME.ipynb    <- first three digits (0X0) indicate problem number, 
+ ├── tests/   
+ |   ├── answer_tests/  
+ |   |   ├── 00s.py                       <- tests the solution for first 10 problems
+ |   |   └── ...  
+ |   └── module_tests/  
+ |       ├── graphs/  
+ |       |   └── graphs_tests.py          <- tests for the maths.graphs module
+ |       └── ...  
+ └── 000-100/                             <- solution files
+     ├── X0s/  
+     |   ├── 0X0_ZZ_PROBLEM_NAME.py       <- first three digits (0X0) indicate problem number, 
      |   |                                   next two (ZZ) indicate difficulty level (00-95)  
-     |   ├── 0X1_ZZ_PROBLEM_NAME.ipynb  
+     |   ├── 0X1_ZZ_PROBLEM_NAME.py  
      |   ├── ...  
-     |   └── 0X9_ZZ_PROBLEM_NAME.ipynb  
-     ├── /10s/  
-     |   ├── 010_ZZ_PROBLEM_NAME.ipynb  
+     |   └── 0X9_ZZ_PROBLEM_NAME.py  
+     ├── 10s/  
+     |   ├── 010_ZZ_PROBLEM_NAME.py  
      |   ├── ...  
-     |   └── 019_ZZ_PROBLEM_NAME.ipynb  
+     |   └── 019_ZZ_PROBLEM_NAME.py  
      └── ...  
 ```
 

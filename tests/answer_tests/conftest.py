@@ -1,17 +1,10 @@
 """add path to sys path"""
 
-import sys
-import os
 import pytest
 import time
 import inspect
 
 from maths.logs import logger
-
-
-def get_problem_files(section):
-    sys.path.append(section)
-    return [file for file in os.listdir(section) if file.endswith(".py")]
 
 
 @pytest.fixture
@@ -28,13 +21,9 @@ def solve_problem():
         end = time.perf_counter()
         solved = solution == answer
         if solved:
-            print(
-                f"success on {problem_file:50} in {end - start: 0.4f} seconds{bypass_str}"
-            )
+            print(f"success on {problem_file:50} in {end - start: 0.4f} seconds{bypass_str}")
         else:
-            print(
-                f"FAILURE on {problem_file:50} in {end - start: 0.4f} seconds{bypass_str}"
-            )
+            print(f"FAILURE on {problem_file:50} in {end - start: 0.4f} seconds{bypass_str}")
             assert solution == answer
 
     return solve

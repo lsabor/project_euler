@@ -1,7 +1,7 @@
 """ensuring solutions work for 00s"""
 
 import pytest
-from conftest import get_problem_files
+from . import get_problem_files
 
 section = "000-100/30s"
 

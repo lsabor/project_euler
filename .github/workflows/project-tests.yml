@@ -34,7 +34,7 @@ jobs:
 
       - name: Run tests
         run:
-          pytest
+          pipenv run pytest
 
   # test-modules:
   #   name: module-tests

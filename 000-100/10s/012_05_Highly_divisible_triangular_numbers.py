@@ -34,11 +34,33 @@ ANSWER = 76576500
 
 # imports
 
+from maths.primes import numFromCounter
 from maths.sequences import TriangleNumbers
-from maths.primes import divisorCountFromPFCounter, primeFactorization
+from collections import Counter
+from itertools import combinations_with_replacement
+from maths.sequences import PrimesSeq
 
 
 # solution
+
+"""
+notes:
+the divisor count of n is equal to the product of (exponents+1) of n's prime factorization
+we will cycle through different values for ex, removing a prime factor each time,
+checking to see if any are triangle numbers
+since 2^8 < 500 < 2^9, we'll start by assuming that the number we're looking for will only
+have the first 9 prime numbers at most: [2, 3, 5, 7, 11, 13, 17, 19, 23]
+let s be the sum of the exponents, we'll start with lowest possible value for s, than inc from there
+since prod([2, 3, 5, 7, 11, 13, 17, 19, 23]) is not a triangle number, and 3*2*2*2*2*2*2*2 < 500,
+first we'll try with [2, 3, 5, 7, 11, 13, 17] and ex count is 11
+"""
+
+
+def count_divisors(exponents):
+    divisors = 1
+    for ex in exponents:
+        divisors *= 1 + ex
+    return divisors
 
 
 def solution(bypass=False):
@@ -47,8 +69,23 @@ def solution(bypass=False):
     div_min = 500
 
     T = TriangleNumbers()
-    valids = T.takeWhile(lambda x, y: divisorCountFromPFCounter(primeFactorization(x)) < div_min)
-    return T[len(valids)]
+    P = PrimesSeq()
+    solutions = []
+
+    s = 11
+    while True:
+        possible_primes = P[: 18 - s]
+        for comb in combinations_with_replacement(possible_primes, s - len(possible_primes)):
+            pf = Counter(possible_primes) + Counter(comb)
+            if count_divisors(pf) <= 500:
+                continue
+            n = numFromCounter(pf)
+            if T.inverseFormula(n) % 1 == 0:
+                solutions.append(n)
+
+        if solutions:
+            return min(solutions)
+        s += 1
 
 
 if __name__ == "__main__":
@@ -58,4 +95,4 @@ if __name__ == "__main__":
     sol = solution(bypass=False)
     t1 = perf_counter()
     print(f"solution = {sol} in {t1-t0: 0.4f} seconds")
-    print("answer =", ANSWER)
+    print("answer   =", ANSWER)

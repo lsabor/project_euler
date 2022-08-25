@@ -24,42 +24,60 @@ ANSWER = 4179871
 # imports
 
 from maths.sequences.compound import DivisorSeq, PrimeFactorSeq
-from maths.math import product
+from maths.math import combinations
 
 # solution
 
-PFS = PrimeFactorSeq()
+# PFS = PrimeFactorSeq()
+# DS = DivisorSeq()
+
+# search_depth = 28124
+# PFS[search_depth]  # make sure PFS is populated up to search_depth, makes next step easier
+# DS[search_depth]  # make sure DS is populated up to search_depth
+
+
+# def get_abundant_numbers(search_depth):
+#     abundant_numbers = []
+#     for n in range(2, search_depth):
+#         if n < (sum(DS.seq[n]) - n):
+#             abundant_numbers.append(n)
+#     return abundant_numbers
+
+
+# def sumNonAbundants(seach_depth):
+#     abundant_numbers = get_abundant_numbers(search_depth)
+
+#     not_sum_of_two_abundants = set(range(search_depth))
+#     for i, j in product(abundant_numbers, abundant_numbers):
+#         s = i + j
+#         if s in not_sum_of_two_abundants:
+#             not_sum_of_two_abundants.remove(s)
+
+#     return sum(not_sum_of_two_abundants)
+
+
 DS = DivisorSeq()
 
 search_depth = 28124
-PFS[search_depth]  # make sure PFS is populated up to search_depth, makes next step easier
-DS[search_depth]  # make sure DS is populated up to search_depth
+search_depth = 20162  # actually this is true
 
 
-def get_abundant_numbers(search_depth):
-    abundant_numbers = []
-    for n in range(2, search_depth):
-        if n < (sum(DS.seq[n]) - n):
-            abundant_numbers.append(n)
-    return abundant_numbers
-
-
-def sumNonAbundants(seach_depth):
-    abundant_numbers = get_abundant_numbers(search_depth)
-
-    not_sum_of_two_abundants = set(range(search_depth))
-    for i, j in product(abundant_numbers, abundant_numbers):
-        s = i + j
-        if s in not_sum_of_two_abundants:
-            not_sum_of_two_abundants.remove(s)
-
-    return sum(not_sum_of_two_abundants)
+def get_abundance(n):
+    return sum(DS[n]) - n
 
 
 def solution(bypass=False):
     if bypass:
         return ANSWER
-    return sumNonAbundants(search_depth)
+
+    answer = 0
+    abundant_numbers = set()
+    for n in range(1, search_depth):
+        if n < get_abundance(n):
+            abundant_numbers.add(n)
+        if not any((n - a in abundant_numbers) for a in abundant_numbers):
+            answer += n
+    return answer
 
 
 if __name__ == "__main__":
@@ -69,4 +87,4 @@ if __name__ == "__main__":
     sol = solution(bypass=False)
     t1 = perf_counter()
     print(f"solution = {sol} in {t1-t0: 0.4f} seconds")
-    print("answer =", ANSWER)
+    print("answer   =", ANSWER)

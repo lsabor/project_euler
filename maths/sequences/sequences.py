@@ -49,6 +49,10 @@ class Sequence(Set):
         """returns self.seq as a set for easy lookup"""
         return set(self.seq)
 
+    def asDict(self):
+        """returns self.seq as a dictionary with indicies as keys"""
+        return {v: k for v, k in enumerate(self.seq)}
+
     def _setupCache(self, action="x") -> TextIOWrapper:
         # simply generates the cache file if not already created
         if not os.path.exists(self.cache_file) and action not in ["w", "x"]:
@@ -148,9 +152,7 @@ class Sequence(Set):
                     index = 2 * index if index else 1
                     if index > last_index:
                         if index == 2 * last_index:
-                            raise IndexError(
-                                f"condition always satisifed before {last_index=}"
-                            )
+                            raise IndexError(f"condition always satisifed before {last_index=}")
                         index = last_index
                 index //= 2
         if direction:
@@ -212,9 +214,7 @@ class TestOnlySequence(Sequence):
     def __getitem__(self, key):
         slicekey = slicify(key)
         if slicekey.stop > len(self.seq):
-            logger.debug(
-                f" Extending {'local' if not self.cached else ''} cache of {self.name}"
-            )
+            logger.debug(f" Extending {'local' if not self.cached else ''} cache of {self.name}")
             self.testUpTo(slicekey.stop)
             if self.cached:
                 self.expandCache()
@@ -239,6 +239,9 @@ class FormulaicSequence(Sequence):
         ...
 
     def __getitem__(self, key: int | slice) -> object | list[object]:
+        # intercept simplest case first
+        if isinstance(key, int) and key < len(self.seq):
+            return super().__getitem__(key)
         slicekey = slicify(key)
         idxs = slicekey.indices(slicekey.stop)
         if idxs[0] == idxs[1] and isinstance(key, slice):
@@ -253,9 +256,7 @@ class FormulaicSequence(Sequence):
         else:
             result = [self.formula(i) for i in range(*idxs)]
             return (
-                result
-                if (len(result) > 1) or isinstance(key, slice)
-                else next(iter(result), None)
+                result if (len(result) > 1) or isinstance(key, slice) else next(iter(result), None)
             )
 
 

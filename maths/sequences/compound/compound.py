@@ -23,6 +23,11 @@ class PrimeFactorSeq(PrimeFactorizations, InvertableSequence):
     example = "[Counter({}) Counter({2:1}) Counter({3:1}) ...]"
     first_value = Counter()
     cached = True
+    datatypes = [Counter]
+
+    def asDict(self):
+        """does not work"""
+        raise TypeError("unhasahable type: Counter")
 
     @staticmethod
     def formula(n: int) -> Counter:
@@ -60,6 +65,10 @@ class DivisorSeq(InvertableSequence):
     cached = True
     PFS = PrimeFactorSeq()
     datatypes = [list]
+
+    def asDict(self):
+        """custom to hash lists"""
+        return {v: set(k) for v, k in enumerate(self.seq)}
 
     @classmethod
     def formula(klass, n: int) -> list[int]:

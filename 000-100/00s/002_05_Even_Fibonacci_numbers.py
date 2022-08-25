@@ -48,4 +48,4 @@ if __name__ == "__main__":
     sol = solution(bypass=False)
     t1 = perf_counter()
     print(f"solution = {sol} in {t1-t0: 0.4f} seconds")
-    print("answer =", ANSWER)
+    print("answer   =", ANSWER)

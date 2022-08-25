@@ -47,11 +47,15 @@ def solution(bypass=False):
     div_min = 500
 
     T = TriangleNumbers()
-    valids = T.takeWhile(
-        lambda x, y: divisorCountFromPFCounter(primeFactorization(x)) < div_min
-    )
+    valids = T.takeWhile(lambda x, y: divisorCountFromPFCounter(primeFactorization(x)) < div_min)
     return T[len(valids)]
 
 
 if __name__ == "__main__":
-    solution(bypass=False)
+    from time import perf_counter
+
+    t0 = perf_counter()
+    sol = solution(bypass=False)
+    t1 = perf_counter()
+    print(f"solution = {sol} in {t1-t0: 0.4f} seconds")
+    print("answer =", ANSWER)

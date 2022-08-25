@@ -36,9 +36,7 @@ def ways_to_compose(n):
         new_methods = []
         for amount in range(n + 1):
             wo_new = matrix[row][amount]
-            w_new = (
-                0 if coin > len(new_methods) else new_methods[len(new_methods) - coin]
-            )
+            w_new = 0 if coin > len(new_methods) else new_methods[len(new_methods) - coin]
             new_methods.append(wo_new + w_new)
         matrix.append(new_methods)
 
@@ -52,4 +50,10 @@ def solution(bypass=True):
 
 
 if __name__ == "__main__":
-    solution(bypass=False)
+    from time import perf_counter
+
+    t0 = perf_counter()
+    sol = solution(bypass=False)
+    t1 = perf_counter()
+    print(f"solution = {sol} in {t1-t0: 0.4f} seconds")
+    print("answer =", ANSWER)

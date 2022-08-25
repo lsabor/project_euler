@@ -18,9 +18,6 @@ class Node:
     def __repr__(self):
         return str(self.value)
 
-    def __eq__(self, other):
-        return self.value == other.value and self.flag == other.flag
-
     def getAdjacentEdges(self) -> set["Edge"]:
         return self.outbound.union(self.in_bound)
 
@@ -48,15 +45,6 @@ class Edge:
                 init_tag = "<"
                 last_tag = "-"
         return f'{self.node0} {init_tag}{self.length if self.length else ""}{last_tag} {self.node1}'
-
-    def __eq__(self, other):
-        return all(
-            [
-                self.getDestinies() == other.getDestinies(),
-                self.getGenesises() == other.getGenesises(),
-                self.flag == other.flag,
-            ]
-        )
 
     def getDestinies(self) -> set[Node]:
         """returns the nodes which are in the direction of the edge"""
@@ -208,9 +196,7 @@ class Graph:
         edges = node.getAdjacentEdges()
         in_bound_adjacent_nodes = set()
         for edge in edges:
-            in_bound_adjacent_nodes = in_bound_adjacent_nodes.union(
-                edge.get_genisises()
-            )
+            in_bound_adjacent_nodes = in_bound_adjacent_nodes.union(edge.get_genisises())
         if node in in_bound_adjacent_nodes:
             in_bound_adjacent_nodes.remove(node)
         return in_bound_adjacent_nodes
@@ -232,50 +218,22 @@ class Graph:
     #     pass
 
     def getAdjacentNodesWithFlag(self, node: Node, flag_name: str):
-        return set(
-            [node for node in self.getAdjacentNodes(node) if node.flag == flag_name]
-        )
+        return set([node for node in self.getAdjacentNodes(node) if node.flag == flag_name])
 
     def getAdjacentNodesWithoutFlag(self, node: Node, flag_name: str):
-        return set(
-            [node for node in self.getAdjacentNodes(node) if node.flag != flag_name]
-        )
+        return set([node for node in self.getAdjacentNodes(node) if node.flag != flag_name])
 
     def getOutboundAdjacentNodesWithFlag(self, node: Node, flag_name: str):
-        return set(
-            [
-                node
-                for node in self.getOutboundAdjacentNodes(node)
-                if node.flag == flag_name
-            ]
-        )
+        return set([node for node in self.getOutboundAdjacentNodes(node) if node.flag == flag_name])
 
     def getOutboundAdjacentNodesWithoutFlag(self, node: Node, flag_name: str):
-        return set(
-            [
-                node
-                for node in self.getOutboundAdjacentNodes(node)
-                if node.flag != flag_name
-            ]
-        )
+        return set([node for node in self.getOutboundAdjacentNodes(node) if node.flag != flag_name])
 
     def getInBoundAdjacentNodesWithFlag(self, node: Node, flag_name: str):
-        return set(
-            [
-                node
-                for node in self.getInBoundAdjacentNodes(node)
-                if node.flag == flag_name
-            ]
-        )
+        return set([node for node in self.getInBoundAdjacentNodes(node) if node.flag == flag_name])
 
     def getInBoundAdjacentNodesWithoutFlag(self, node: Node, flag_name: str):
-        return set(
-            [
-                node
-                for node in self.getInBoundAdjacentNodes(node)
-                if node.flag != flag_name
-            ]
-        )
+        return set([node for node in self.getInBoundAdjacentNodes(node) if node.flag != flag_name])
 
     def getAllConnectedNodes(self, node):
         self.resetNodes(self.nodes)
@@ -319,32 +277,33 @@ class Graph:
 
     def shortestPathDirectional(self, n0, n1):
         # returns distance, and path
+        size = len(self)
         connected_nodes = self.getAllDirectionallyConnectedNodes(n0)
         if n1 not in connected_nodes:
             raise Exception("NO PATH EXISTS")
         for node in connected_nodes:
             node.flag = "UNSEEN"
-            node.distance = "inf"
+            node.distance = float("inf")
         n0.distance = 0
 
         current_node = n0
 
+        searched = 0
         while current_node is not n1:
+            searched += 1
+            print(f"searching {searched}/{size}", end="\r")
             current_node.flag = "VISITED"
             adjacent_nodes = self.getOutboundAdjacentNodes(current_node)
+            adjacent_nodes = [node for node in adjacent_nodes if node.flag != "VISITED"]
             for n in adjacent_nodes:
                 relevant_edges = [
                     edge
                     for edge in self.edges
                     if edge.doesDirectionallyConnectNodes(current_node, n)
                 ]
-                new_distance = current_node.distance + min(
-                    [edge.length for edge in relevant_edges]
-                )
+                new_distance = current_node.distance + min([edge.length for edge in relevant_edges])
                 n.distance = (
-                    new_distance
-                    if n.distance == "inf"
-                    else min(n.distance, new_distance)
+                    new_distance if n.distance == float("inf") else min(n.distance, new_distance)
                 )
                 if new_distance == n.distance:
                     n.path_parent = current_node
@@ -355,9 +314,7 @@ class Graph:
                     next_node = (
                         node
                         if next_node is None
-                        else (
-                            next_node if next_node.distance <= node.distance else node
-                        )
+                        else (next_node if next_node.distance <= node.distance else node)
                     )
             current_node = next_node
 
@@ -397,9 +354,7 @@ class Graph:
             for node in self.nodes:
                 nodes = set()
                 for edge in node.getAdjacentEdges():
-                    nodes = nodes.union(
-                        set(node for node in edge.nodes if node in untested)
-                    )
+                    nodes = nodes.union(set(node for node in edge.nodes if node in untested))
                 untested.remove(node)
                 if nodes:
                     nodes.remove(node)

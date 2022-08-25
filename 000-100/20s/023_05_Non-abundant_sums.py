@@ -32,9 +32,7 @@ PFS = PrimeFactorSeq()
 DS = DivisorSeq()
 
 search_depth = 28124
-PFS[
-    search_depth
-]  # make sure PFS is populated up to search_depth, makes next step easier
+PFS[search_depth]  # make sure PFS is populated up to search_depth, makes next step easier
 DS[search_depth]  # make sure DS is populated up to search_depth
 
 
@@ -65,4 +63,10 @@ def solution(bypass=False):
 
 
 if __name__ == "__main__":
-    solution(bypass=False)
+    from time import perf_counter
+
+    t0 = perf_counter()
+    sol = solution(bypass=False)
+    t1 = perf_counter()
+    print(f"solution = {sol} in {t1-t0: 0.4f} seconds")
+    print("answer =", ANSWER)

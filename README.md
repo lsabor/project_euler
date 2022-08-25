@@ -69,4 +69,4 @@ From the conditions of using the website, one cannot publish solutions to proble
 """  
 Please do not deprive others of going through the same process by publishing your solution outside of Project Euler. Members found to be spoiling problems beyond the first one-hundred problems will have their accounts locked.  
 """  
-I intend to continue soliving problems pas 100, but will put those solutions in a private repository viewable only upon request.  
+I intend to continue soliving problems past 100, but will put those solutions in a private repository viewable only upon request.  

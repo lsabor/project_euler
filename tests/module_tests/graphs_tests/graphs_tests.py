@@ -11,11 +11,13 @@ class Test_Helpers:
     @pytest.mark.parametrize(
         "input,xoutput",
         [
-            ([[1, 2, 3]], [[Node(1), Node(2), Node(3)]]),
+            ([[1, 2, 3], [4, 5, 6], [7, 8, 9]], [[1, 2, 3], [4, 5, 6], [7, 8, 9]]),
         ],
     )
     def test_nodify(self, output_or_error, input, xoutput):
-        output_or_error(nodify, input, xoutput)
+        output_or_error(
+            lambda x: [[node.value for node in row] for row in nodify(x)], input, xoutput
+        )
 
 
 # TODO: finish graph tests

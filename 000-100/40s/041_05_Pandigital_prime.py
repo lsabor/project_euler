@@ -26,8 +26,18 @@ from functools import reduce
 from operator import add
 
 # solution
+
+"""
+note:
+any 9 digit pandigital number is divisible by 3: 9+8+7+6+5+4+3+2+1 = 45, thus never prime
+same for 8 as 8+7+6+5+4+3+2+1 = 36
+thus the largest number of digits a pandigital could be is 7
+so start with 7654321
+"""
+
+
 def find_largest_pandigital():
-    pandigital = "987654321"
+    pandigital = "7654321"
     while True:
         for n in permutations(pandigital):
             # permutations should list the numbers in strictly decending order

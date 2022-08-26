@@ -41,21 +41,24 @@ def solution(bypass=False):
 
     search = 1000
 
-    P = PrimesSeq().set()
+    P = PrimesSeq()
+    P_set = P.set()
 
     def f(n, a, b):
         return n**2 + a * n + b
 
     ab = 0
     consecutive = 0
-    for a, b in product(range(-search, search), range(-(search + 1), search + 1)):
+    # b must be prime, since n can be 0
+    for a, b in product(range(-search, search), P.takeWhileLT(1000)):
         n = 0
-        while f(n, a, b) in P:
+        while f(n, a, b) in P_set:
             n += 1
         if n > consecutive:
             consecutive = n
             ab = a * b
-
+            aa = a
+            bb = b
     return ab
 
 

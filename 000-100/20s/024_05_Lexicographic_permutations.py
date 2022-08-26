@@ -15,9 +15,6 @@ Date solved:
 2022/04/02
 """
 
-# TODO: refactor for speed
-
-
 ANSWER = 2783915460
 
 # imports
@@ -30,15 +27,17 @@ from maths.math import permutations
 def solution(bypass=False):
     if bypass:
         return ANSWER
-    ls = list(range(10))
 
-    perms = list(permutations(ls))
-    perms.sort()
+    i = 1
+    for perm in permutations(range(10)):
+        if i == 1e6:
+            break
+        i += 1
+    perm
 
-    millionth = perms[int(1e6 - 1)]
     result = 0
-    for i, val in enumerate(millionth):
-        result += val * 10 ** (len(millionth) - i - 1)
+    for i, val in enumerate(perm):
+        result += val * 10 ** (len(perm) - i - 1)
 
     return result
 

@@ -21,11 +21,12 @@ from maths.sequences import PrimesSeq
 
 # solution
 
+P = PrimesSeq()
+
 
 def solution(bypass=False):
     if bypass:
         return ANSWER
-    P = PrimesSeq()
     return P[10000]
 
 

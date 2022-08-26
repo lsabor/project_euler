@@ -32,8 +32,7 @@ from maths.primes import numFromCounter
 
 # solution
 
-pfs = PrimeFactorSeq()
-pfs[200000]  # makes sure pfs is instantiated up to 200000
+pfs = PrimeFactorSeq()  # TODO: deserialize/serialize very inefficient
 
 
 def find_consecutive_pf_counts(n):

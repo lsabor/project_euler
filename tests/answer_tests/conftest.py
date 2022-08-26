@@ -4,24 +4,42 @@ import pytest
 import time
 import inspect
 
-from maths.logs import logger
+from maths.logs import logging
 
 
 @pytest.fixture
 def solve_problem():
     def solve(problem_file):
-        start = time.perf_counter()
+
+        setup_start = time.perf_counter()
         problem = __import__(problem_file[:-3])
+        setup_end = time.perf_counter()
         answer = problem.ANSWER
         solution_func = problem.solution
+        setup_duration = setup_end - setup_start
+        setup_msg = f"Setup duration = {setup_duration:0.4f} seconds"
+
+        solution_start = time.perf_counter()
         solution = solution_func()
-        end = time.perf_counter()
-        duration = end - start
-        duration_str = f" (please refactor, duration over 1 sec)" if duration > 1 else ""
+        solution_end = time.perf_counter()
+        solution_duration = solution_end - solution_start
+        solution_msg = f"Solution duration = {solution_duration:0.4f} seconds"
+
         solution_func_args = inspect.signature(solution_func)
         bypassed = list(solution_func_args.parameters.values())[0].default
-        bypass_str = " (bypassed)" if bypassed else ""
+        bypass_msg = "Bypassed"
+
+        if setup_duration > 1:
+            logging.warning(setup_msg)
+        if solution_duration > 1:
+            logging.warning(solution_msg)
+        if bypassed:
+            logging.info(bypass_msg)
+
         assert solution == answer
-        print(f"success on {problem_file:50} in {duration: 0.4f} seconds{bypass_str}{duration_str}")
+        # print(
+        #     f"success on {problem_file:50} in {solution_duration:0.4f} seconds"
+        #     + f"{bypass_msg}{duration_str}{import_str}"
+        # )
 
     return solve

@@ -15,7 +15,6 @@ Date solved:
 ANSWER = 6.5
 
 # imports
-import maths.sequences
 
 # solution
 

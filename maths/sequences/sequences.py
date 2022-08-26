@@ -32,7 +32,6 @@ class Sequence(Set):
     first_value = ...
     monotonic = 0
 
-    @log
     def __init__(self, seq: list[object] = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.comparitor = self.cardinality  # TODO this doesn't belong here
@@ -41,8 +40,9 @@ class Sequence(Set):
         if self.cached:
             self.cache_file = cache_folder + self.name + ".json"
             cached_seq = self.readCache()
-            self.seq = cached_seq or self.seq
-            if not cached_seq:
+            if cached_seq:
+                self.seq = cached_seq
+            else:
                 self.expandCache()
 
     def set(self):
@@ -186,7 +186,6 @@ class TestOnlySequence(Sequence):
     example = "PrimesSequence"
     local_caching = True
 
-    @log
     def __init__(self, init_len: int = 0, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.seq = self.seq if len(self.seq) > init_len else self[:init_len]
@@ -229,7 +228,6 @@ class FormulaicSequence(Sequence):
     example = "[f(0) f(1) f(2) ...]"
     repr_len = 5
 
-    @log
     def __init__(self, init_len: int = 1, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.seq = self.seq if len(self.seq) > init_len else self[:init_len]

@@ -1,28 +1,25 @@
 """
-## Counting Sundays
+## Amicable numbers
 
-Problem 19
+Problem 21
 
-You are given the following information, but you may prefer to do some research for yourself.
+Let d(n) be defined as the sum of proper divisors of n (numbers less than n which divide evenly into n).
+If d(a) = b and d(b) = a, where a ≠ b, then a and b are an amicable pair and each of a and b are called amicable numbers.
 
-    1 Jan 1900 was a Monday.
-    Thirty days has September,
-    April, June and November.
-    All the rest have thirty-one,
-    Saving February alone,
-    Which has twenty-eight, rain or shine.
-    And on leap years, twenty-nine.
-    A leap year occurs on any year evenly divisible by 4, but not on a century unless it is divisible by 400.
+For example, the proper divisors of 220 are 1, 2, 4, 5, 10, 11, 20, 22, 44, 55 and 110; therefore d(220) = 284. The proper divisors of 284 are 1, 2, 4, 71 and 142; so d(284) = 220.
 
-How many Sundays fell on the first of the month during the twentieth century (1 Jan 1901 to 31 Dec 2000)?
+Evaluate the sum of all the amicable numbers under 10000.
 
 
-
-Link: https://projecteuler.net/problem=19
+Link: https://projecteuler.net/problem=21
 
 Date solved:  
 2022/03/21
 """
+
+from time import perf_counter
+
+t0 = perf_counter()
 
 ANSWER = 31626
 
@@ -35,7 +32,6 @@ from maths.sequences.compound import DivisorSeq
 DS = DivisorSeq()
 
 search_depth = int(1e4)
-DS[search_depth]  # makes sure DS gets populated up to search_depth
 
 
 def divsum(n: int) -> int:
@@ -58,9 +54,7 @@ def solution(bypass=False):
 
 
 if __name__ == "__main__":
-    from time import perf_counter
 
-    t0 = perf_counter()
     sol = solution(bypass=False)
     t1 = perf_counter()
     print(f"solution = {sol} in {t1-t0: 0.4f} seconds")

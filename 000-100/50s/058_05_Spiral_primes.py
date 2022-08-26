@@ -44,7 +44,6 @@ def find_diminishing_prime_threshold():
     interval = 2
 
     while True:
-        # for _ in range(4):
         new_diag_nums = []
         for _ in range(4):
             num += interval

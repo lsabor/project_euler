@@ -1,6 +1,10 @@
-from itertools import combinations_with_replacement
-from collections import Counter
-from maths.primes.primes import primeFactorization
-from maths.sequences import PrimesSeq
+from maths.primes import divisorCount
 
-print(3 * 2 * 2 * 2 * 2 * 2 * 2 * 2)
+best = 1
+tmax = 0
+for i in range(1001):
+    t = divisorCount(i)
+    if t > tmax:
+        tmax = t
+        best = i
+print(print(best, tmax))

@@ -19,8 +19,6 @@ Date solved:
 2022/07/10
 """
 
-# TODO: refactor for speed
-
 
 ANSWER = 5482660
 
@@ -30,55 +28,24 @@ from maths.sequences import PentagonalNumbers
 
 # solution
 
-P = PentagonalNumbers()
-
-
-def get_pentagonal_number_n(n: int):  # TODO: refactor this func out to P
-    return int(n * (3 * n - 1) / 2)
-
-
-def get_first_instance():
-    """returns the first instance where the difference between and some of pentagonal number
-    n and a smaller pentagonal number n1 are pentagaonal numbers.
-    By "first instance" it means a search as n increases by 1 each step, it is possible that
-    another instance with smaller difference could be found using a larger n, which will be
-    tested in the next function"""
-    i = 1
-    n = get_pentagonal_number_n(i)
-    while True:
-        for j in range(1, i):
-            n1 = get_pentagonal_number_n(i - j)
-            diff = n - n1
-            if P._isInSetSpecified(diff):
-                if P._isInSetSpecified(n + n1):
-                    return diff, n, i
-        i += 1
-        n = get_pentagonal_number_n(i)
-
-
-def verify_instance(diff, n, i):
-    base = get_pentagonal_number_n(i - 1)
-    # test for increasing values of n until n-base is larger than diff
-    while n - base < diff:
-        for j in range(1, i):
-            n1 = get_pentagonal_number_n(i - j)
-            new_diff = n - n1
-            if P._isInSetSpecified(new_diff):
-                if new_diff < diff:
-                    if P._isInSetSpecified(n + n1):
-                        diff = new_diff
-        i += 1
-        n = get_pentagonal_number_n(i)
-
-    return diff
-
 
 def solution(bypass=False):
     if bypass:
         return ANSWER
 
-    diff, n, i = get_first_instance()
-    return verify_instance(diff, n, i)
+    n = 1
+    pentagonals = set()
+
+    while True:
+        H = PentagonalNumbers.formula(n)
+        for M in pentagonals:
+            L = H - M
+            if L in pentagonals:
+                D = M - L
+                if D in pentagonals:
+                    return D
+        pentagonals.add(H)
+        n += 1
 
 
 if __name__ == "__main__":

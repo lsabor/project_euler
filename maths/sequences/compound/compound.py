@@ -63,8 +63,11 @@ class DivisorSeq(InvertableSequence):
     example = "[[] [1] [1, 2] [1, 3] [1, 2, 4]...]"
     first_value = []
     cached = True
-    PFS = PrimeFactorSeq()
     datatypes = [list]
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.PFS = PrimeFactorSeq()
 
     def asDict(self):
         """custom to hash lists"""

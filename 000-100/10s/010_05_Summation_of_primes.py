@@ -26,9 +26,9 @@ from maths.sequences import PrimesSeq
 def solution(bypass=False):
     if bypass:
         return ANSWER
+    P = PrimesSeq()
     cap = 2e6
 
-    P = PrimesSeq()
     primes = P.takeWhileLT(cap)
 
     return sum(primes)

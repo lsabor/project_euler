@@ -32,10 +32,7 @@ ANSWER = 402
 
 # imports
 
-from collections import defaultdict
 from maths.math import factorial
-from functools import lru_cache
-import sys
 
 # solution
 

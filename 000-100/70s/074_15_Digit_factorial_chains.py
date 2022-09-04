@@ -28,15 +28,14 @@ Date solved:
 2022/08/17
 """
 
-ANSWER = 0
+ANSWER = 402
 
 # imports
 
+from collections import defaultdict
 from maths.math import factorial
 from functools import lru_cache
 import sys
-
-print(sys.getrecursionlimit())
 
 # solution
 
@@ -51,44 +50,31 @@ def digit_factorial_sum(n):
 
 
 def digit_factorial_chains(threshold, length):
-    # loop_nums = set([0,1,2,145,169,363601,1454,871,872,45361,45362])
-    loop_nums = set()
 
-    # @lru_cache
-    def chain_len(n):
-        nonlocal loop_nums
-        nonlocal seen
-        nonlocal l
-        if n in loop_nums:
-            # print(f"{n=} found in {loop_nums=}")
-            # print(f"total chain {seen}, {n}")
-            return
-        if n in seen:
-            # print(f"{loop_nums=}")
-            loop_nums = loop_nums.union(set(seen[seen.index(n) :]))
-            # print(f"{loop_nums=}")
-            # print(f"{n} loops in {seen}, so returning {seen.index(n) - len(seen)}")
-            l -= seen.index(n) - len(seen)
-            return
-        seen.append(n)
-        l += 1
-        if l <= length:
-            chain_len(digit_factorial_sum(n))
-        return
+    # for memoization
+    seen = dict()
 
     count = 0
-    for n in range(0, threshold):
-        seen = []
-        l = 0
-        # print()
-        # print(f"{n=}")
-        # print(f"{count=}")
-        # print(f"{loop_nums=}")
-        chain_length = chain_len(n)
-        # print(f"{chain_length=}")
-        count += l == length
+    for n in range(threshold):
+        this_trip = []
+        current = n
+        while current not in seen:
+            # check if we have a new loop that hasn't been seen before
+            # if so, then add this loop's info to seen, and break
+            if current in this_trip:
+                for index, value in enumerate(this_trip[::-1]):
+                    seen[value] = index + 1
+                this_trip = []
+                break
+            this_trip.append(current)
+            current = digit_factorial_sum(current)
+        chain_len = len(this_trip) + seen[current]
+        count += chain_len == length
+        # momoizing here
+        for index, value in enumerate(this_trip):
+            seen[value] = chain_len - index
 
-    return count, loop_nums
+    return count
 
 
 def solution(bypass=True):

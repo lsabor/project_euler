@@ -22,10 +22,10 @@ Starting with 69 produces a chain of five non-repeating terms, but the longest n
 
 How many chains, with a starting number below one million, contain exactly sixty non-repeating terms?
 
-Link: https://projecteuler.net/problem=73
+Link: https://projecteuler.net/problem=74
 
 Date solved:  
-2022/08/17
+2022/09/04
 """
 
 ANSWER = 402
@@ -74,7 +74,7 @@ def digit_factorial_chains(threshold, length):
     return count
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
 

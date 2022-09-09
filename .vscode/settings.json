@@ -7,4 +7,5 @@
         "**/CVS": false,
         "**/Thumbs.db": false
     },
+    "python.formatting.provider": "black",
 }

@@ -11,9 +11,13 @@ pytest = "*"
 pytest-mock = "*"
 
 [dev-packages]
+black = "*"
 
 [requires]
 python_version = "3.10"
 
 [scripts]
 test = "pytest"
+
+[pipenv]
+allow_prereleases = true

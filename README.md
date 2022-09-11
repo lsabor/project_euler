@@ -10,7 +10,7 @@ Co-authors (noted on specific problems):
 Andrew Roberts - GitHub: @ajroberts0417  
 Geroge Jeffreys - georgej@bu.edu  
 Michael Morgan - GitHub: @msmorgan  
-DeMehr Haywood - GitHub: @demehr
+DeMehr Haywood - GitHub: @demehr  
 
 Project details:  
 Started March 5, 2022  

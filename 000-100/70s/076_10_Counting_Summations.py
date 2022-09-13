@@ -53,33 +53,49 @@ from functools import lru_cache
 #     return sum([H(n, a) for a in range(1, n + 1)])
 
 
-nmax = 100
-ways = [1] + [0] * nmax
-ways = [1]
+# n = 100
+# M = [[0] * n for _ in range(n)]
+# for k in range(n):
+#     M[k][k] = 1
+#     i = k
+#     while i > 0:
+#         M[k][k - i] = sum(M[i - 1][k - i :])
+#         i -= 1
 
-div = 1
-while True:
-    for i in range()
+history = [[]]
 
-for div in range(1,nmax):
-    for i in range(len(ways)-div):
-        ways[i + div] += ways[i]
 
-print(ways[-1]) 
+def count_partitions(n, history):
+    """returns a list which represents the count of all partitionings of n where {index+1} is
+    exactly equal to the smallest partition in the partitioning of n
+    e.g.
+    n = 1 -> [1]
+    n = 2 -> [1, 1]
+    n = 3 -> [2, 0, 1]
+    n = 4 -> [3, 1, 0, 1]
+    n = 5 -> [5, 1, 0, 0, 1]
+
+    notice:
+    1. result[len(n)-1] == 1
+    2. result[m] == sum(history[-m][m-1:]) (when len(history[-m]) >= m)
+    """
+    result = []
+    for m in range(n):
+        if m == n:
+            value = 1
+        elif m >= n/2:
+            value = 0
+        else:
+            value = sum(history[-m][])
+
+
+
 
 def solution(bypass=True):
     if bypass:
         return ANSWER
-    # num = 10
-    # return f(num) - 1
 
-    nmax = 100
-    ways = [1] + [0] * nmax
-    for div in range(1, nmax):
-        for i in range(len(ways) - div):
-            ways[i + div] += ways[i]
-
-    print(ways[-1])
+    return sum(M[-1]) - 1
 
 
 if __name__ == "__main__":

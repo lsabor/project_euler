@@ -19,7 +19,7 @@ Date solved:
 """
 
 
-ANSWER = 5000
+ANSWER = 71
 
 # imports
 
@@ -33,7 +33,7 @@ from maths.sequences.special_sequences import PrimesSeq
 primes = PrimesSeq().seq
 
 
-@lru_cache
+@lru_cache(100)
 def H(n, a):
     if a == n:
         return 1

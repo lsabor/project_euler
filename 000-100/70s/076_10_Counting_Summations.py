@@ -35,7 +35,7 @@ from maths.sequences.special_sequences import PentagonalNumbers
 PN = PentagonalNumbers()
 
 
-@lru_cache(5000000)
+@lru_cache(100)
 def p(n):
     if n == 1 or n == 0:
         return 1

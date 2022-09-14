@@ -18,7 +18,10 @@ Find the least value of n for which p(n) is divisible by one million.
 Link: https://projecteuler.net/problem=78
 
 Date solved:  
+09/11/2022
 """
+
+# TODO: refactor for speed
 
 ANSWER = 55374
 
@@ -57,7 +60,7 @@ def p(n, m):
     return result % m
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
 
@@ -69,7 +72,6 @@ def solution(bypass=True):
         n += 1
         count = p(n, m)
 
-    print(count)
     return n
 
 

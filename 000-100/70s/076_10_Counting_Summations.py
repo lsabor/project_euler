@@ -59,7 +59,7 @@ def p(n):
     return result
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
 

@@ -27,75 +27,43 @@ ANSWER = 190569291
 # imports
 
 from functools import lru_cache
+from maths.sequences.special_sequences import PentagonalNumbers
 
 # solution
 
 
-# @lru_cache
-# def H(n, a):
-#     if a == 1 or n == a:
-#         print(n, a, 1)
-#         return 1
-#     if a > n:
-#         print(n, a, 0)
-#         return 0
-
-#     end = min(a, n - a)
-
-#     result = sum([H(n - a, b) for b in range(1, end + 1)])
-
-#     print(n, a, result)
-
-#     return result
+PN = PentagonalNumbers()
 
 
-# def f(n):
-#     return sum([H(n, a) for a in range(1, n + 1)])
+@lru_cache(5000000)
+def p(n):
+    if n == 1 or n == 0:
+        return 1
+    result = 0
+    i = 1
+    delta = 1
+    sign = 1
+    while True:
+        pentagonal = PN[i - 1]
 
+        if (next_value := n - pentagonal) < 0:
+            break
+        result += sign * p(next_value)
+        if next_value < delta:
+            break
+        result += sign * p(next_value - delta)
 
-# n = 100
-# M = [[0] * n for _ in range(n)]
-# for k in range(n):
-#     M[k][k] = 1
-#     i = k
-#     while i > 0:
-#         M[k][k - i] = sum(M[i - 1][k - i :])
-#         i -= 1
-
-history = [[]]
-
-
-def count_partitions(n, history):
-    """returns a list which represents the count of all partitionings of n where {index+1} is
-    exactly equal to the smallest partition in the partitioning of n
-    e.g.
-    n = 1 -> [1]
-    n = 2 -> [1, 1]
-    n = 3 -> [2, 0, 1]
-    n = 4 -> [3, 1, 0, 1]
-    n = 5 -> [5, 1, 0, 0, 1]
-
-    notice:
-    1. result[len(n)-1] == 1
-    2. result[m] == sum(history[-m][m-1:]) (when len(history[-m]) >= m)
-    """
-    result = []
-    for m in range(n):
-        if m == n:
-            value = 1
-        elif m >= n/2:
-            value = 0
-        else:
-            value = sum(history[-m][])
-
-
+        i += 1
+        delta += 1
+        sign *= -1
+    return result
 
 
 def solution(bypass=True):
     if bypass:
         return ANSWER
 
-    return sum(M[-1]) - 1
+    return p(100) - 1
 
 
 if __name__ == "__main__":

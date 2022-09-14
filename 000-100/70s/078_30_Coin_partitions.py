@@ -20,42 +20,57 @@ Link: https://projecteuler.net/problem=78
 Date solved:  
 """
 
-ANSWER = 0
+ANSWER = 55374
 
 # imports
 
 from functools import lru_cache
+from maths.sequences.special_sequences import PentagonalNumbers
 
 # solution
 
 
-# @lru_cache
-def H(n, a, m):
-    if a == 1 or n == a:
+PN = PentagonalNumbers()
+
+
+@lru_cache(5000000)
+def p(n, m):
+    if n == 1 or n == 0:
         return 1
-    if a > n:
-        return 0
+    result = 0
+    i = 1
+    delta = 1
+    sign = 1
+    while True:
+        pentagonal = PN[i - 1]
 
-    return sum([H(n - a, b, m) for b in range(1, a + 1)]) % m
+        if (next_value := n - pentagonal) < 0:
+            break
+        result += sign * p(next_value, m)
+        if next_value < delta:
+            break
+        result += sign * p(next_value - delta, m)
 
-
-def f(n, m):
-    return sum([H(n, a, m) for a in range(1, n + 1)]) % m
+        i += 1
+        delta += 1
+        sign *= -1
+    return result % m
 
 
 def solution(bypass=True):
     if bypass:
         return ANSWER
 
-    modulo = 1000
+    m = 1000000
 
     n = 1
-    while True:
-        fnm = f(n, modulo)
-        print(n, fnm)
-        if fnm == 0:
-            return n
+    count = p(n, m)
+    while count % m:
         n += 1
+        count = p(n, m)
+
+    print(count)
+    return n
 
 
 if __name__ == "__main__":

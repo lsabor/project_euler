@@ -11,7 +11,9 @@ n → 3n + 1 (n is odd)
 Using the rule above and starting with 13, we generate the following sequence:
 13 → 40 → 20 → 10 → 5 → 16 → 8 → 4 → 2 → 1
 
-It can be seen that this sequence (starting at 13 and finishing at 1) contains 10 terms. Although it has not been proved yet (Collatz Problem), it is thought that all starting numbers finish at 1.
+It can be seen that this sequence (starting at 13 and finishing at 1) contains 10 terms. 
+Although it has not been proved yet (Collatz Problem), it is thought that all starting 
+numbers finish at 1.
 
 Which starting number, under one million, produces the longest chain?
 
@@ -34,31 +36,44 @@ ANSWER = 837799
 
 # solution
 
-# TODO: refactor for speed
 
-
-def func(n):
+def collatz(n):
     return n // 2 if n % 2 == 0 else 3 * n + 1
+
+
+def find_longest_collatz(threshold):
+
+    already_found = dict()
+    longest = 0
+    length = 0
+    for starting in list(range(2, threshold)):
+        n = starting
+        current_length = 0
+        newly_found = []
+        while n != 1:
+            if n in already_found:
+                current_length += already_found[n]
+                break
+            newly_found.append(n)
+            current_length += 1
+            n = collatz(n)
+
+        vallen = current_length
+        for found in newly_found:
+            already_found[found] = vallen
+            vallen -= 1
+        if current_length > length:
+            length = current_length
+            longest = starting
+
+    return longest
 
 
 def solution(bypass=False):
     if bypass:
         return ANSWER
-    threshold = int(1e6)
-    count = 0
-    val = 1
 
-    for i in range(2, 1000000):
-        c = 0
-        n = i
-        while n != 1:
-            n = func(n)
-            c += 1
-        if c > count:
-            count = c
-            val = i
-
-    return val
+    return find_longest_collatz(1000000)
 
 
 if __name__ == "__main__":

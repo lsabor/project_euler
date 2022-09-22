@@ -49,7 +49,7 @@ def create_pandigital(n):
     return True, int(sn)
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
 

@@ -35,7 +35,7 @@ def find_powerful_digit_sum():
     return max_sum
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
 

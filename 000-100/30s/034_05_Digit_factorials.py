@@ -33,7 +33,7 @@ def digit_factorial(N):
     return df_sum
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
 

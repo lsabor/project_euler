@@ -63,7 +63,7 @@ def add_strints(n1, n2):
     return result
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
     n1 = "1"

@@ -67,7 +67,7 @@ for key, value in ones_dict.items():
     length_dict[key] = length
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
     total_length = length_dict[1000]  # 'THOUSAND'

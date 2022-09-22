@@ -24,7 +24,7 @@ ANSWER = 1366
 # solution
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
     n = 2**1000

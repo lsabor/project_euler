@@ -47,7 +47,7 @@ def closest_ordered_fraction(threshold):
     return best_n
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
 

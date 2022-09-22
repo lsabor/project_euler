@@ -50,7 +50,7 @@ def monLen(month: int, year: int) -> int:
     return 30
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
     # find day of week Jan 1 1901

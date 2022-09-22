@@ -23,7 +23,7 @@ ANSWER = 872187
 # solution
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
 

@@ -28,7 +28,7 @@ from maths.math import product
 # solution
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
 

@@ -82,7 +82,7 @@ def find_diophantine_solutions(threshold):
     return biggest_D
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
 

@@ -29,7 +29,7 @@ ANSWER = 669171001
 # solution
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
     dim = 1001

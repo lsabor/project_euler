@@ -148,7 +148,7 @@ def count_p1_wins():
     return p1_wins
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
 

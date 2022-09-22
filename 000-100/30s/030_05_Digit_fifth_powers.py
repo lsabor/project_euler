@@ -52,7 +52,7 @@ def get_max_N():
     return N
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
     N = get_max_N()  # returns 354294

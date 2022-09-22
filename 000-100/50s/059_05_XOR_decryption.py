@@ -73,7 +73,7 @@ def find_reasonable_message(message):
     return best_message
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
 

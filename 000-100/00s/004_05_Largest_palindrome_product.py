@@ -42,7 +42,7 @@ def largePalindromes():
     return palindroms
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
     return max(largePalindromes())

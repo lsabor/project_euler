@@ -58,7 +58,7 @@ def find_prime_pair_group(threshold):
             return [clique.union(set([new_node])) for clique in cliques]
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
 

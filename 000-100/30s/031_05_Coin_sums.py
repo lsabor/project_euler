@@ -43,7 +43,7 @@ def ways_to_compose(n):
     return matrix[-1][-1]
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
     return ways_to_compose(200)

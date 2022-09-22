@@ -44,7 +44,7 @@ def find_smallest_permuted_number():
             n += 1
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
 

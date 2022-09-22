@@ -56,7 +56,7 @@ def count_disproportionate_convergents():
     return count
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
 

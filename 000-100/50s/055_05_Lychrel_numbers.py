@@ -68,7 +68,7 @@ def count_lychrel_numbers(threshold):
     return count
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
 

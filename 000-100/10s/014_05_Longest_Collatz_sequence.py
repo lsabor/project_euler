@@ -41,7 +41,7 @@ def func(n):
     return n // 2 if n % 2 == 0 else 3 * n + 1
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
     threshold = int(1e6)

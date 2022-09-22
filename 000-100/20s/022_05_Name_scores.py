@@ -24,7 +24,7 @@ ANSWER = 871198282
 # solution
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
     file_name = "problem_files/p022_names.txt"

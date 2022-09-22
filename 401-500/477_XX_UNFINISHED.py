@@ -273,7 +273,7 @@ def play_game(S: list[int]):
 play_game(S)
 
 
-def solution(bypass=True):
+def solution(bypass=False):
     if bypass:
         return ANSWER
 

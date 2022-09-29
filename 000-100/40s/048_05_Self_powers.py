@@ -29,9 +29,7 @@ def sum_consecutive_tetrations(n: int, mod: int = 0):
     return result
 
 
-def solution(bypass=False):
-    if bypass:
-        return ANSWER
+def solution():
 
     return sum_consecutive_tetrations(1000, int(1e10)) % int(1e10)
 
@@ -40,7 +38,7 @@ if __name__ == "__main__":
     from time import perf_counter
 
     t0 = perf_counter()
-    sol = solution(bypass=False)
+    sol = solution()
     t1 = perf_counter()
     print(f"solution = {sol} in {t1-t0: 0.4f} seconds")
     print("answer   =", ANSWER)

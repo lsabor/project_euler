@@ -2,7 +2,6 @@
 
 import pytest
 import time
-import inspect
 
 from maths.logs import logging
 
@@ -25,16 +24,10 @@ def solve_problem():
         solution_duration = solution_end - solution_start
         solution_msg = f"Solution duration = {solution_duration:0.4f} seconds"
 
-        solution_func_args = inspect.signature(solution_func)
-        bypassed = list(solution_func_args.parameters.values())[0].default
-        bypass_msg = "Bypassed"
-
         if setup_duration > 1:
             logging.warning(setup_msg)
         if solution_duration > 1:
             logging.warning(solution_msg)
-        if bypassed:
-            logging.info(bypass_msg)
 
         assert solution == answer
         # print(

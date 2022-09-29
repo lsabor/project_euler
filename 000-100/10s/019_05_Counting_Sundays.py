@@ -50,9 +50,7 @@ def monLen(month: int, year: int) -> int:
     return 30
 
 
-def solution(bypass=False):
-    if bypass:
-        return ANSWER
+def solution():
     # find day of week Jan 1 1901
     len_1900 = 366 if isLeapYear(1900) else 365
     jan1_1901_day_of_week = (len_1900 + 1) % 7  # 0: Sunday, 1: Monday, ...
@@ -73,7 +71,7 @@ if __name__ == "__main__":
     from time import perf_counter
 
     t0 = perf_counter()
-    sol = solution(bypass=False)
+    sol = solution()
     t1 = perf_counter()
     print(f"solution = {sol} in {t1-t0: 0.4f} seconds")
     print("answer   =", ANSWER)

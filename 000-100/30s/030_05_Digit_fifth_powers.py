@@ -52,9 +52,7 @@ def get_max_N():
     return N
 
 
-def solution(bypass=False):
-    if bypass:
-        return ANSWER
+def solution():
     N = get_max_N()  # returns 354294
 
     digit_fifth_powers = []
@@ -69,7 +67,7 @@ if __name__ == "__main__":
     from time import perf_counter
 
     t0 = perf_counter()
-    sol = solution(bypass=False)
+    sol = solution()
     t1 = perf_counter()
     print(f"solution = {sol} in {t1-t0: 0.4f} seconds")
     print("answer   =", ANSWER)

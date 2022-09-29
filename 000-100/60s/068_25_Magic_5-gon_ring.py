@@ -40,9 +40,7 @@ ANSWER = 6531031914842725
 # solution
 
 
-def solution(bypass=False):
-    if bypass:
-        return ANSWER
+def solution():
 
     # objective is to maximize strint = "AabBbcCcdDdeEea" such that:
     # 1) S == A+a+b == B+b+c == C+c+d == D+d+e == E+e+a
@@ -88,7 +86,7 @@ if __name__ == "__main__":
     from time import perf_counter
 
     t0 = perf_counter()
-    sol = solution(bypass=False)
+    sol = solution()
     t1 = perf_counter()
     print(f"solution = {sol} in {t1-t0: 0.4f} seconds")
     print("answer   =", ANSWER)

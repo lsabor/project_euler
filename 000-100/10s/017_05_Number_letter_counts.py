@@ -67,9 +67,7 @@ for key, value in ones_dict.items():
     length_dict[key] = length
 
 
-def solution(bypass=False):
-    if bypass:
-        return ANSWER
+def solution():
     total_length = length_dict[1000]  # 'THOUSAND'
     for i in range(1, 1000):
         last_two = i % 100
@@ -92,7 +90,7 @@ if __name__ == "__main__":
     from time import perf_counter
 
     t0 = perf_counter()
-    sol = solution(bypass=False)
+    sol = solution()
     t1 = perf_counter()
     print(f"solution = {sol} in {t1-t0: 0.4f} seconds")
     print("answer   =", ANSWER)

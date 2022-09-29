@@ -221,9 +221,7 @@ NUMBERS = """37107287533902102798797998220837590246510135740250
 53503534226472524250874054075591789781264330331690"""
 
 
-def solution(bypass=False):
-    if bypass:
-        return ANSWER
+def solution():
 
     numbers = NUMBERS.split("\n")
     numbers = map(int, numbers)
@@ -235,7 +233,7 @@ if __name__ == "__main__":
     from time import perf_counter
 
     t0 = perf_counter()
-    sol = solution(bypass=False)
+    sol = solution()
     t1 = perf_counter()
     print(f"solution = {sol} in {t1-t0: 0.4f} seconds")
     print("answer   =", ANSWER)

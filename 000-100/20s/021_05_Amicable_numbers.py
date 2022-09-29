@@ -47,15 +47,13 @@ def sumAmicableNums(search_depth):
     return amisum
 
 
-def solution(bypass=False):
-    if bypass:
-        return ANSWER
+def solution():
     return sumAmicableNums(search_depth)
 
 
 if __name__ == "__main__":
 
-    sol = solution(bypass=False)
+    sol = solution()
     t1 = perf_counter()
     print(f"solution = {sol} in {t1-t0: 0.4f} seconds")
     print("answer   =", ANSWER)

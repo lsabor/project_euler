@@ -41,9 +41,7 @@ def is_circular(prime):
     return True
 
 
-def solution(bypass=False):
-    if bypass:
-        return ANSWER
+def solution():
 
     circular_prime_count = 0
     for prime in p:
@@ -57,7 +55,7 @@ if __name__ == "__main__":
     from time import perf_counter
 
     t0 = perf_counter()
-    sol = solution(bypass=False)
+    sol = solution()
     t1 = perf_counter()
     print(f"solution = {sol} in {t1-t0: 0.4f} seconds")
     print("answer   =", ANSWER)

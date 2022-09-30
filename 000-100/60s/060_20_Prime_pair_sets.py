@@ -65,7 +65,6 @@ def find_prime_pair_group(threshold):
 def solution():
 
     clique = find_prime_pair_group(threshold)[0]
-    print(clique)
     return sum([node.value for node in clique])
 
 

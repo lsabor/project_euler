@@ -19,7 +19,6 @@ Date solved:
 w/ George Jeffreys
 """
 
-# TODO: BROKEN
 
 ANSWER = 26033
 
@@ -32,9 +31,10 @@ from maths.primes import isPrime
 # solution
 
 P = PrimesSeq()
+# P[:100000] # you may have to make sure that the first 50_000 primes are populated... TODO: fix
 ps = set(P.seq)
 
-threshold = 4
+threshold = 5
 
 
 def is_prime_pair_set(p1, p2):

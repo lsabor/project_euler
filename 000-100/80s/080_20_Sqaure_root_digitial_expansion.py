@@ -18,7 +18,7 @@ Date solved:
 09/30/2022
 """
 
-ANSWER = 0
+ANSWER = 40886
 
 # imports
 

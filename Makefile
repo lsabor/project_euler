@@ -3,3 +3,6 @@ test-modules:
 
 test-answers:
 	pipenv run pytest tests/answer_tests/$(group)
+
+tc:
+	pipenv run pytest -rA -m current

@@ -1,5 +1,6 @@
 """tests for graphs"""
 
+import string
 import pytest
 
 from maths.graphs.graphs2 import *
@@ -26,10 +27,105 @@ def graph():
 
 
 @pytest.fixture
-def populated_graph():
-    n1 = Node(name="A")
-    n2 = Node(name="B")
-    return Graph(nodes=[n1, n2])
+def graph_with_nodes(graph):
+    n1 = Node(name="A", value=0)
+    n2 = Node(name="B", value=1)
+    graph.nodes = [n1, n2]
+    return graph
+
+
+@pytest.fixture
+def graph_unweighted(graph_with_nodes):
+    graph = graph_with_nodes
+    n1, n2 = graph.nodes
+    n1.add_adj(n2)
+    return graph
+
+
+@pytest.fixture
+def graph_weighted(graph_with_nodes):
+    graph = graph_with_nodes
+    graph.weighted = True
+    n1, n2 = graph.nodes
+    n1.add_adj(n2, 5)
+    return graph
+
+
+@pytest.fixture
+def graph_two_chains(graph):
+    for index, letter in enumerate(string.ascii_uppercase):
+        node = Node(value=index, name=letter)
+        graph.add_node(node)
+    count = len(graph.nodes)
+    for i in range(count - 1):
+        graph.add_edge(i, i + 1)
+    graph.remove_edge(count // 2 - 1, count // 2)
+
+    return graph
+
+
+class Test_Nodes:
+    """tests for the Node object"""
+
+    """
+    - nodes can have edges
+    - nodes can have unweighted or weighted edges
+    - edges can be removed from nodes
+    - get edges from a node
+    - edge can connect node to itself
+    """
+
+    @pytest.mark.current
+    def test_node_unweighted_adjs(self):
+        n1 = Node(1)
+        n2 = Node(2, adjs=[(n1, 1)])
+
+        assert n1.adjs == []
+        assert n2.adjs == [(n1, 1)]
+
+        n1.add_adj(n2)
+        assert n1.adjs == [(n2, 1)]
+
+    @pytest.mark.current
+    def test_node_weighted_adjs(self):
+        n1 = Node(1)
+        n2 = Node(2, adjs=[(n1, 5)])
+
+        assert n1.adjs == []
+        assert n2.adjs == [(n1, 5)]
+
+        n1.add_adj(n2, 7)
+        assert n1.adjs == [(n2, 7)]
+
+    @pytest.mark.current
+    def test_node_remove_unweighted_adj(self):
+        n1 = Node(1)
+        n2 = Node(2, adjs=[(n1, 1)])
+
+        n2.remove_adj(n1)
+        assert n2.adjs == []
+
+    @pytest.mark.current
+    def test_node_remove_weighted_adj_node_ref(self):
+        n1 = Node(1)
+        n2 = Node(2, adjs=[(n1, 5)])
+
+        n2.remove_adj(n1)
+        assert n2.adjs == []
+
+    @pytest.mark.current
+    def test_node_remove_weighted_adj(self):
+        n1 = Node(1)
+        n2 = Node(2, adjs=[(n1, 5)])
+
+        n2.remove_adj((n1, 5))
+        assert n2.adjs == []
+
+    @pytest.mark.current
+    def test_node_edge_to_itself(self):
+        node = Node()
+        node.add_adj(node, 2)
+        assert node.adjs == [(node, 2)]
 
 
 class Test_Graphs:
@@ -37,19 +133,14 @@ class Test_Graphs:
 
     """
     BASIC functionality:
-    X - make a graph 
+    - make a graph 
     - add some nodes
     - add some edges
     - remove nodes
     - remove edges
     - search for node with specific value
-    - search for edge with specific weight
-    - edge can have or not have directions
-    - edge can connect node to itself
-
-    REFERENTIAL functionality like traversing:
-    - get edges from a node
-    - get nodes attached to an edge
+    - search for node with edge with specific weight
+    - search for nodes that match condition
     - get size of graph
 
     RELATIONAL functionality like search, subgraphing, etc.
@@ -57,7 +148,6 @@ class Test_Graphs:
     - return arbitrary subgraph from nodes w/o outside connections as a graph object
     - find cliques of size
     - find shortest path between nodes
-    - 
 
     """
 
@@ -80,8 +170,8 @@ class Test_Graphs:
         assert graph.nodes == [n1, n2]
 
     @pytest.mark.current
-    def test_graph_remove_node(self, populated_graph):
-        graph = populated_graph
+    def test_graph_remove_node(self, graph_with_nodes):
+        graph = graph_with_nodes
         n1, n2 = graph.nodes
         graph.remove_node(n1)
         assert graph.nodes == [n2]
@@ -89,46 +179,89 @@ class Test_Graphs:
             graph.remove_node(n1)
 
     @pytest.mark.current
-    def test_node_unweighted_adjs(self):
-        n1 = Node(1)
-        n2 = Node(2, adjs=[n1])
-
-        assert n1.adjs == []
-        assert n2.adjs == [n1]
-
-        n1.add_adj(n2)
-        assert n1.adjs == [n2]
-
-    @pytest.mark.current
-    def test_node_weighted_adjs(self):
-        n1 = Node(1)
-        n2 = Node(2, adjs=[(n1, 5)])
-
-        assert n1.adjs == []
-        assert n2.adjs == [(n1, 5)]
-
-        n1.add_adj((n2, 7))
-        assert n1.adjs == [(n2, 7)]
-
-    @pytest.mark.current
-    def test_node_remove_weighted_adj(self):
-        n1 = Node(1)
-        n2 = Node(2, adjs=[(n1, 5)])
-
-        n2.remove_adj((n1, 5))
-        assert n2.adjs == [(n1, 5)]
-
-    @pytest.mark.current
     @pytest.mark.parametrize(
         "n1_ref,n2_ref",
         [
             (0, 1),
-            ("A", "B"),  # TODO: add direct node refernce... maybe jsut another test :(
+            ("A", "B"),
+            ("N1", "N2"),
         ],
     )
-    def test_graph_add_edge(self, populated_graph, n1_ref, n2_ref):
-        graph = populated_graph
-        graph.weighted = False
+    def test_graph_add_edge(self, graph_with_nodes, n1_ref, n2_ref):
+        graph = graph_with_nodes
         n1, n2 = graph.nodes[:2]
+        if n1_ref == "N1":
+            n1_ref, n2_ref = n1, n2
         graph.add_edge(n1_ref, n2_ref)
-        assert n1.adjs == [n2]
+        assert n1.adjs == [(n2, 1)]
+
+    @pytest.mark.current
+    def test_graph_remove_edge(self, graph_unweighted):
+        graph = graph_unweighted
+        n1, n2 = graph.nodes[:2]
+        graph.remove_edge(n1, n2)
+        assert n1.adjs == []
+
+    @pytest.mark.current
+    def test_graph_get_specific_node(self, graph_with_nodes):
+        graph = graph_with_nodes
+        node = graph.get_node((lambda node: node.name == "A"))
+        assert node.name == "A"
+
+    @pytest.mark.current
+    def test_graph_get_specific_node_by_name(self, graph_with_nodes):
+        graph = graph_with_nodes
+        node = graph.get_node_by_name("A")
+        assert node.name == "A"
+
+    @pytest.mark.current
+    def test_graph_get_specific_node_by_value(self, graph_with_nodes):
+        graph = graph_with_nodes
+        node = graph.get_node_by_value(0)
+        assert node.value == 0
+
+    @pytest.mark.current
+    def test_graph_get_node_by_edge_weight(self, graph_weighted):
+        graph = graph_weighted
+        node = graph.get_node(lambda node: any(adj[1] == 5 for adj in node.adjs))
+        assert node == graph.nodes[0]
+
+    @pytest.mark.current
+    def test_graph_get_nodes_by_condition(self, graph_with_nodes):
+        graph = graph_with_nodes
+        nodes = graph.get_nodes(lambda node: node.value >= 0)
+        assert nodes[:2] == graph.nodes[:2]
+
+    @pytest.mark.current
+    def test_graph_size(self, graph_with_nodes):
+        graph = graph_with_nodes
+        assert len(graph) == 2
+
+    @pytest.mark.current
+    def test_graph_get_edges(self, graph_unweighted):
+        graph = graph_unweighted
+        n1, n2 = graph.nodes[:2]
+        edges = graph.get_edges()
+        assert edges[0] == (n1, n2, 1)
+
+    @pytest.mark.current
+    def test_graph_get_edges(self, graph_weighted):
+        graph = graph_weighted
+        n1, n2 = graph.nodes[:2]
+        edges = graph.get_edges()
+        assert edges[0] == (n1, n2, 5)
+
+    @pytest.mark.current
+    def test_graph_get_connected_subgraph(self, graph_two_chains):
+        graph = graph_two_chains
+        subgraph = graph.get_subgraph_connected_from_head(graph.nodes[0])
+        assert len(subgraph) == len(graph) // 2
+
+    @pytest.mark.current
+    def test_graph_get_subgraph(self, graph_two_chains):
+        graph = graph_two_chains
+        s = len(graph)
+        subgraph = graph.get_subgraph_edgeless_copy(graph.nodes[s // 2 - 2 : s // 2 + 2])
+        n1, n2, n3, n4 = subgraph.nodes
+        assert len(subgraph) == 4
+        assert subgraph.get_edges() == [(n1, n2, 1), (n3, n4, 1)]

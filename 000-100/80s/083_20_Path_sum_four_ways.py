@@ -24,7 +24,7 @@ Date solved:
 10/28/2022
 """
 
-ANSWER = 427337
+ANSWER = 0
 
 # imports
 
@@ -36,6 +36,16 @@ import numpy as np
 
 with open(auto_get_problem_file(), "r") as f:
     array = np.array(read_file_as_array(f))
+
+array = np.array(
+    [
+        [131, 673, 234, 103, 18],
+        [201, 96, 342, 965, 150],
+        [630, 803, 746, 422, 111],
+        [537, 699, 497, 121, 956],
+        [805, 732, 524, 37, 331],
+    ]
+)
 
 
 def setup_graph(array):
@@ -52,8 +62,10 @@ def setup_graph(array):
         row = i // n  # row
         if row != n - 1:
             adjs[i, i + n] = [1, array[row + 1, col]]
+            adjs[i + n, i] = [1, array[row + 1, col]]
         if col != n - 1:
             adjs[i, i + 1] = [1, array[row, col + 1]]
+            adjs[i + 1, i] = [1, array[row, col + 1]]
 
     return Graph(nodes=nodes, adjs=adjs)
 
@@ -61,6 +73,7 @@ def setup_graph(array):
 def solution():
     graph = setup_graph(array)
     dist, path = graph.lowest_cost_path(graph.nodes[-1], graph.nodes[-2])
+    print(path)
     return int(dist)
 
 

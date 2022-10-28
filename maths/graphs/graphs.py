@@ -24,9 +24,9 @@ class BaseGraph(Set):
     directional = True
     weighted = False
 
-    def __init__(self, nodes=None, adjs=None, depth=1, *args, **kwargs):
-        self.nodes = nodes if nodes else []
-        self.adjs = adjs if adjs is not None else self.initialized_matrix(depth=depth)
+    def __init__(self, *args, **kwargs):
+        self.nodes = kwargs.get("nodes", np.array([]))
+        self.adjs = kwargs.get("adjs", self.initialized_matrix(depth=kwargs.get("depth", 1)))
         super().__init__(*args, **kwargs)
 
     def __repr__(self):
@@ -45,9 +45,9 @@ class BaseGraph(Set):
 
     def get_index(self, node_ref=None):
         """returns single index of node or index from node_ref"""
-        if isinstance(node_ref, int):
+        if not isinstance(node_ref, Node):
             return node_ref
-        return self.nodes.index(node_ref)
+        return np.where(self.nodes == np.array(node_ref))[0][0]
 
     def get_node(self, node_ref=None):
         """returns a single node obj from node or index"""
@@ -58,31 +58,31 @@ class BaseGraph(Set):
     def get_indicies(self, node_refs):
         """returns a list of indicies form node_refs
         node_refs should be list of nodes or indicies"""
-        if not node_refs:
+        if node_refs is None or len(node_refs) == 0:
             return []
         first = node_refs[0]
-        if isinstance(first, int):
+        if not isinstance(first, Node):
             return node_refs
-        return [self.nodes.index(node) for node in node_refs]
+        return np.where([node in node_refs for node in self.nodes])[0]
 
     def get_nodes(self, node_refs):
         """returns a list of nodes form node_refs
         node_refs should be list of nodes or indicies"""
-        if not node_refs:
+        if node_refs is None or len(node_refs) == 0:
             return []
         first = node_refs[0]
         if isinstance(first, Node):
             return node_refs
-        return [self.nodes[index] for index in node_refs]
+        return self.nodes[node_refs]
 
     def get_indicies_list(self, node_refs=None):
         """returns a list of indicies representing node_refs
         deals well with singular node refs as an index or Node, as well as
         lists of those"""
         if node_refs is None:
-            return [None]
+            return []
         if isinstance(node_refs, Iterable):
-            return self.get_indicies(list(node_refs))
+            return self.get_indicies(node_refs)
         return [self.get_index(node_refs)]
 
     def get_nodes_list(self, node_refs=None):
@@ -92,7 +92,7 @@ class BaseGraph(Set):
         if node_refs is None:
             return [None]
         if isinstance(node_refs, Iterable):
-            return self.get_nodes(list(node_refs))
+            return self.get_nodes(node_refs)
         return [self.get_node(node_refs)]
 
     def _expm(self, matrix):
@@ -128,7 +128,7 @@ class BaseGraph(Set):
 
     def get_adjs_indicies(self, node_ref=None) -> array:
         """returns the indicies of adjacent nodes"""
-        return np.where(self.get_adjs_only_array(node_ref))
+        return np.where(self.get_adjs_only_array(node_ref))[0]
 
     def remove_node(self, node_ref=None):
         if node_ref is not None:
@@ -139,36 +139,37 @@ class BaseGraph(Set):
         if not node_refs:
             return
         node_refs = self.get_indicies(node_refs)
-        for node_ref in sorted(node_refs, reverse=True):
-            del self.nodes[node_ref]
+        self.nodes = np.delete(self.nodes, node_refs, axis=0)
         self.adjs = np.delete(self.adjs, node_refs, axis=0)
         self.adjs = np.delete(self.adjs, node_refs, axis=1)
 
     def get_subgraph(self, node_list):
         node_list = self.get_indicies_list(node_list)
-        if node_list[0] is None:
-            return BaseGraph()
-        nodes = [self.nodes[i] for i in node_list]
+        if node_list is None or len(node_list) == 0:
+            return self.__class__()
+        nodes = self.nodes[node_list]
         adjs = self.adjs[node_list, :][:, node_list]
-        return self.__class__(nodes, adjs)
+        return self.__class__(nodes=nodes, adjs=adjs)
 
     def copy(self):
-        return self.__class__(self.nodes, self.adjs, self.weights)
+        return self.__class__(nodes=self.nodes, ajds=self.adjs)
 
     def get_connected_subgraph(self, node):
         node = self.get_index(node)
 
-        def get_connections(node, subgraph):
+        def get_connections(node, node_set):
+            breakpoint()
             for i in self.get_adjs_indicies(node):
-                if i not in subgraph:
-                    subgraph.add(i)
-                    subgraph = subgraph.union(get_connections(i, subgraph))
-            return subgraph
+                if i not in node_set:
+                    node_set = np.append(node_set, i)
+                    node_set = get_connections(i, node_set)
+            return node_set
 
-        return self.get_subgraph(get_connections(node, set([node])))
+        nodes = get_connections(node, np.array([node]))
+        return self.get_subgraph(nodes)
 
     def _addn(self, node):
-        self.nodes.append(node)
+        self.nodes = np.append(self.nodes, node)
 
     def _calc_to_adjs(self, node, adjs=None, adj_rule=None):
         if adjs is not None:
@@ -259,6 +260,58 @@ class DirectionalWeightedGraph(DirectionalGraph):
 
     def add_edge(self, n1, n2, weight=1, edge=1):
         super().add_edge(n1, n2, edge=[edge, weight])
+
+    def lowest_cost_path(self, n1, n2):
+        cn, end_node = self.get_node(n1), self.get_node(n2)
+        n0 = cn
+        # graph = self.get_connected_subgraph(cn)
+        graph = self
+        ci, ei = graph.get_index(n1), graph.get_index(n2)
+        if not graph.isInSet(end_node):
+            raise Exception("no path between n1 and n2")
+
+        graph.set_flags(graph.nodes, "unseen")
+        for node in graph.nodes:
+            node.distance = float("inf")
+        cn.flag = "visited"
+        cn.distance = 0.0
+        visited = 0
+        while ci != ei:
+            visited += 1
+            print("visited", visited, end="\r")
+            cn.flag = "visited"
+            adjs = graph.adjs[ci]
+            adjs_i = np.where(adjs[:, 0])[0]
+            unvis_i = []
+            for i in adjs_i:
+                if graph.nodes[i].flag != "visited":
+                    unvis_i.append(i)
+            adjs_i = unvis_i
+            adjs_n = graph.nodes[adjs_i]
+            for ai, an in zip(adjs_i, adjs_n):
+                distance = cn.distance + float(adjs[ai, 1])
+                an.distance = (
+                    distance if an.distance == float("inf") else min(an.distance, distance)
+                )
+                if distance == an.distance:
+                    an.path_parent = cn
+                    an.flag = "seen"
+            nn, ni = None, None
+            for i, n in enumerate(graph.nodes):
+                if n.flag == "seen":
+                    if nn is None or n.distance < nn.distance:
+                        nn = n
+                        ni = i
+            cn, ci = nn, ni
+
+        end_node = cn
+        path = [end_node]
+        while cn is not n0:
+            cn = cn.path_parent
+            path.append(cn)
+        path.reverse()
+
+        return end_node.distance, path
 
 
 class NonDirectionalWeightedGraph(DirectionalWeightedGraph):

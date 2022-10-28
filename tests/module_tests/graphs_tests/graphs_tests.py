@@ -273,35 +273,6 @@ import numpy as np
 class Test_Graphs:
     """tests for graph class"""
 
-    def test_thing(self):
-        g = BaseGraph()
-        n0 = Node(0)
-        n1 = Node(1)
-        n2 = Node(2)
-        n3 = Node(3)
-        g.nodes = [n0, n1, n2, n3]
-        g.adjs = np.array([[0, 1, 0, 0], [1, 0, 1, 1], [0, 1, 1, 1], [0, 1, 1, 0]])
-        g.weights = np.array([[0, 2, 0, 0], [2, 0, 3, 4], [0, 3, 6, 7], [0, 4, 7, 0]])
-        n4 = Node(1.5)
-        adj_rule = lambda new, old: (new.value - old.value) ** 2 <= 1
-        weight_rule = lambda new, old: (new.value + old.value) ** 2 // 4
-        g.add_new_node(n4, adj_rule=adj_rule, weight_rule=weight_rule)
-        print(g.nodes)
-        print(g.adjs)
-        print(g.weights)
-        g2 = g.get_subgraph([1, 2, 3])
-        print(g2.nodes)
-        print(g2.adjs)
-        print(g2.weights)
-        g2.remove_node(n1)
-        print(g.nodes)
-        print(g.adjs)
-        print(g.weights)
-        print(g2.nodes)
-        print(g2.adjs)
-        print(g2.weights)
-
-    @pytest.mark.current
     def test_2(self):
         g = Graph()
         n0 = Node(0)

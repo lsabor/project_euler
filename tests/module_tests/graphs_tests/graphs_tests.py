@@ -3,7 +3,7 @@
 import string
 import pytest
 
-from maths.graphs.graphs3 import *
+from maths.graphs.graphs import *
 
 
 # class Test_Helpers:
@@ -285,7 +285,7 @@ class Test_Graphs:
         n4 = Node(1.5)
         adj_rule = lambda new, old: (new.value - old.value) ** 2 <= 1
         weight_rule = lambda new, old: (new.value + old.value) ** 2 // 4
-        g.add_node(n4, adj_rule=adj_rule, weight_rule=weight_rule)
+        g.add_new_node(n4, adj_rule=adj_rule, weight_rule=weight_rule)
         print(g.nodes)
         print(g.adjs)
         print(g.weights)
@@ -309,6 +309,17 @@ class Test_Graphs:
         n2 = Node(2)
         n3 = Node(3)
         n4 = Node(3)
-        print(g)
-        g.add_new_node(n0)
-        print(g)
+        print("g\n", g, "\n")
+        g.add_new_node(n0, adj_rule=lambda x, y: [1, 2])
+        print("g\n", g, "\n")
+        g.add_new_node(n1, adj_rule=lambda x, y: [1, 3])
+        print("g\n", g, "\n")
+        g.add_new_node(n2, adj_rule=lambda x, y: [1, 4])
+        print("g\n", g, "\n")
+        g.add_edge(n2, n2, 12)
+        print("g\n", g, "\n")
+        g.remove_edge(n2, n1)
+        print("g\n", g, "\n")
+        print(g.get_adjs_indicies(n0))
+        print(g.get_adjs_indicies(n1))
+        print(g.get_adjs_indicies(n2))

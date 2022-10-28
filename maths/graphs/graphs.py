@@ -1,371 +1,284 @@
 """This module holds basic graph functions"""
 
+from dataclasses import dataclass
+from typing import Iterable
+from maths.sets import Set
+import itertools
+import numpy as np
+from numpy import array
 
-def nodify(array) -> list:
-    node_array = [[Node(val) for val in row] for row in array]
-    return node_array
 
-
+@dataclass
 class Node:
-    """the basic atom of a graph"""
-
-    def __init__(self, value=None, flag=None):
-        self.value = value
-        self.flag = flag
-        self.outbound = set()
-        self.in_bound = set()
-
-    def __repr__(self):
-        return str(self.value)
-
-    def getAdjacentEdges(self) -> set["Edge"]:
-        return self.outbound.union(self.in_bound)
+    value: int = 0
 
 
-class Edge:
-    """connects two nodes, can be directional"""
+class BaseGraph(Set):
+    """This is the most basic form of graph
+    should be only used as parent class for specific forms of graphs
+    """
 
-    def __init__(self, node0: Node, node1: Node, length=None, direction=0, flag=None):
-        self.node0 = node0
-        self.node1 = node1
-        self.length = length
-        self.nodes = set((self.node0, self.node1))
-        self.flag = flag
-        self.updateDirection(direction)
+    name = "Base Graph"
+    example = ""
+    datatypes = [Node]
+    directional = True
+    weighted = False
+
+    def __init__(self, nodes=None, adjs=None, depth=1, *args, **kwargs):
+        self.nodes = nodes if nodes else []
+        self.adjs = adjs if adjs is not None else self.initialized_matrix(depth=depth)
+        super().__init__(*args, **kwargs)
 
     def __repr__(self):
-        match self._direction:
-            case 1:
-                init_tag = "-"
-                last_tag = ">"
-            case 0:
-                init_tag = "<"
-                last_tag = ">"
-            case -1:
-                init_tag = "<"
-                last_tag = "-"
-        return f'{self.node0} {init_tag}{self.length if self.length else ""}{last_tag} {self.node1}'
+        return f"{self.nodes}\n{self.adjs.transpose(*range(2-len(self.adjs.shape),2))}"
 
-    def getDestinies(self) -> set[Node]:
-        """returns the nodes which are in the direction of the edge"""
-        return set([node for node in self.nodes if self in node.in_bound])
-
-    def getGenesises(self) -> set[Node]:
-        """returns the nodes which are from the direction of the edge"""
-        return set([node for node in self.nodes if self in node.outbound])
-
-    def hasNode(self, node: Node) -> bool:
+    def _isInSet(self, node) -> bool:
+        """return if node is found in graph"""
         return node in self.nodes
 
-    def doesDirectionallyConnectNodes(self, startnode: Node, endnode: Node) -> bool:
-        """returns if self connects startnode to endnode directionally"""
-        return startnode in self.getGenesises() and endnode in self.getDestinies()
+    def initialized_matrix(self, default_value=0, depth=1):
+        """returns an array initialized with default_value (0) to size len(self.nodes)^2"""
+        shape = (len(self.nodes), len(self.nodes))
+        if depth > 1:
+            shape += (depth,)
+        return np.full(shape, default_value)
 
-    def createMateWithNodes(self, startnode: Node, endnode: Node):
-        """add a directional connection between startnode and endnode"""
-        startnode.outbound.add(self)
-        endnode.in_bound.add(self)
+    def get_index(self, node_ref=None):
+        """returns single index of node or index from node_ref"""
+        if isinstance(node_ref, int):
+            return node_ref
+        return self.nodes.index(node_ref)
 
-    def removeMateWithNodes(self, startnode: Node, endnode: Node):
-        """removes a directional edge"""
-        try:
-            startnode.outbound.remove(self)
-            endnode.in_bound.remove(self)
-        except:
-            pass
+    def get_node(self, node_ref=None):
+        """returns a single node obj from node or index"""
+        if isinstance(node_ref, Node):
+            return node_ref
+        return self.nodes[node_ref]
 
-    def updateDirection(self, direction: int):
-        """makes sure that the appropriate direction is established between
-        attached nodes"""
-        self._direction = direction
-        match self._direction:
-            case 1:
-                self.createMateWithNodes(self.node0, self.node1)
-                self.removeMateWithNodes(self.node1, self.node0)
-            case 0:
-                self.createMateWithNodes(self.node0, self.node1)
-                self.createMateWithNodes(self.node1, self.node0)
-            case -1:
-                self.createMateWithNodes(self.node1, self.node0)
-                self.removeMateWithNodes(self.node0, self.node1)
+    def get_indicies(self, node_refs):
+        """returns a list of indicies form node_refs
+        node_refs should be list of nodes or indicies"""
+        if not node_refs:
+            return []
+        first = node_refs[0]
+        if isinstance(first, int):
+            return node_refs
+        return [self.nodes.index(node) for node in node_refs]
 
+    def get_nodes(self, node_refs):
+        """returns a list of nodes form node_refs
+        node_refs should be list of nodes or indicies"""
+        if not node_refs:
+            return []
+        first = node_refs[0]
+        if isinstance(first, Node):
+            return node_refs
+        return [self.nodes[index] for index in node_refs]
 
-# TODO: keep cleaning from here
-class Graph:
-    def __init__(self, edges=None, nodes=None, head=None):
+    def get_indicies_list(self, node_refs=None):
+        """returns a list of indicies representing node_refs
+        deals well with singular node refs as an index or Node, as well as
+        lists of those"""
+        if node_refs is None:
+            return [None]
+        if isinstance(node_refs, Iterable):
+            return self.get_indicies(list(node_refs))
+        return [self.get_index(node_refs)]
 
-        self.nodes = set()
-        self.edges = set()
-        if nodes:
-            self.nodes = nodes
-            self.edges = self.getEdgesFromNodes(nodes)
-        if edges:
-            for edge in edges:
-                self.nodes.add(edge.node0)
-                self.nodes.add(edge.node1)
-                self.edges.add(edge)
-                self.edges = self.edges.union(self.getEdgesFromNodes(self.nodes))
-        self.sethead(head)
+    def get_nodes_list(self, node_refs=None):
+        """returns a list of nodes representing node_refs
+        deals well with singular node refs as an index or Node, as well as
+        lists of those"""
+        if node_refs is None:
+            return [None]
+        if isinstance(node_refs, Iterable):
+            return self.get_nodes(list(node_refs))
+        return [self.get_node(node_refs)]
 
-    def __repr__(self):
-        output = "EDGES:\n"
-        for edge in self.edges:
-            output += f"{edge}\n"
-        output += "NODES:\n" + str(self.nodes)
-        return output
+    def _expm(self, matrix):
+        """
+        returns a matrix with an additional row and column
+        """
+        shape = list(matrix.shape)
+        shape[0] += 1
+        shape[1] += 1
+        new_matrix = np.zeros(shape, dtype=int)
+        new_matrix[:-1, :-1] = matrix
+        return new_matrix
 
-    def __len__(self):
-        return len(self.nodes)
+    def apply_rule_to_all(self, node, rule):
+        """returns an array which is the rule applied to each node in self.nodes"""
+        return array([rule(node, other) for other in self.nodes])
 
-    def remove(self, node):
-        for edge in node.getAdjacentEdges():
-            if edge in self.edges:
-                self.edges.remove(edge)
-        self.nodes.remove(node)
+    def apply_rule_from_all(self, node, rule):
+        """returns an array which is the rule applied to each node in self.nodes"""
+        return array([rule(other, node) for other in self.nodes])
 
-    def getEdgesFromNodes(self, nodes):
-        if not nodes:
-            return set()
-        edges = set()
+    def get_adjs_array(self, node_ref=None) -> array:
+        """returns the array of adjacencies with node_ref
+        node_ref can be either a Node of an index of a node"""
+        return self.adjs[self.get_index(node_ref)]
+
+    def get_adjs_only_array(self, node_ref=None) -> array:
+        """returns the array of only adjacencies with node_ref
+        node_ref can be either a Node of an index of a node"""
+        adjs = self.get_adjs_array(node_ref)
+        slices = (slice(len(adjs)),) + (0,) * (len(self.adjs.shape) - 2)
+        return adjs[slices]
+
+    def get_adjs_indicies(self, node_ref=None) -> array:
+        """returns the indicies of adjacent nodes"""
+        return np.where(self.get_adjs_only_array(node_ref))
+
+    def remove_node(self, node_ref=None):
+        if node_ref is not None:
+            self.remove_nodes([node_ref])
+
+    def remove_nodes(self, node_refs=None):
+        """removes nodes from list of Nodes or indicies"""
+        if not node_refs:
+            return
+        node_refs = self.get_indicies(node_refs)
+        for node_ref in sorted(node_refs, reverse=True):
+            del self.nodes[node_ref]
+        self.adjs = np.delete(self.adjs, node_refs, axis=0)
+        self.adjs = np.delete(self.adjs, node_refs, axis=1)
+
+    def get_subgraph(self, node_list):
+        node_list = self.get_indicies_list(node_list)
+        if node_list[0] is None:
+            return BaseGraph()
+        nodes = [self.nodes[i] for i in node_list]
+        adjs = self.adjs[node_list, :][:, node_list]
+        return self.__class__(nodes, adjs)
+
+    def copy(self):
+        return self.__class__(self.nodes, self.adjs, self.weights)
+
+    def get_connected_subgraph(self, node):
+        node = self.get_index(node)
+
+        def get_connections(node, subgraph):
+            for i in self.get_adjs_indicies(node):
+                if i not in subgraph:
+                    subgraph.add(i)
+                    subgraph = subgraph.union(get_connections(i, subgraph))
+            return subgraph
+
+        return self.get_subgraph(get_connections(node, set([node])))
+
+    def _addn(self, node):
+        self.nodes.append(node)
+
+    def _calc_to_adjs(self, node, adjs=None, adj_rule=None):
+        if adjs is not None:
+            return adjs
+        return (
+            np.zeros(len(self.nodes))
+            if adj_rule is None
+            else self.apply_rule_to_all(node, adj_rule)
+        )
+
+    def _calc_from_adjs(self, node, adjs=None, adj_rule=None):
+        if adjs is not None:
+            return adjs
+        return (
+            np.zeros(len(self.nodes))
+            if adj_rule is None
+            else self.apply_rule_from_all(node, adj_rule)
+        )
+
+    def _upde(self, n1, n2, val):
+        self.adjs[n1, n2] = val
+
+    def add_new_node(self, node, to_adjs=None, from_adjs=None, adj_rule=None):
+        self._addn(node)
+
+        to_adjs = self._calc_to_adjs(node, to_adjs, adj_rule)
+        from_adjs = self._calc_from_adjs(node, from_adjs, adj_rule)
+
+        self.adjs = self._expm(self.adjs)
+        self.adjs[-1, :] = to_adjs
+        self.adjs[:, -1] = from_adjs
+
+    def set_flags(self, nodes, flag):
+        nodes = self.get_nodes_list(nodes)
         for node in nodes:
-            new_edges = set(
-                edge
-                for edge in node.getAdjacentEdges()
-                if ((edge.node0 in nodes) and (edge.node1 in nodes))
-            )
-            edges = edges.union(new_edges)
-        return edges
+            node.flag = flag
 
-    def getNodesFromEdges(self, edges):
-        if not edges:
-            return set()
-        nodes = set()
-        for edge in edges:
-            new_nodes = set(edge.nodes)
-            nodes = nodes.union(new_nodes)
-        return nodes
+    def clear_flags(self, nodes):
+        self.set_flags(nodes, flag=None)
 
-    def addNodeSet(self, nodes):
-        self.nodes = self.nodes.union(nodes)
-        new_edges = self.getEdgesFromNodes(nodes)
-        self.edges = self.edges.union(new_edges)
 
-    def addNode(self, node):
-        self.addNodeSet(set([node]))
+class DirectionalGraph(BaseGraph):
 
-    def addEdgeSet(self, edges):
-        self.edges = self.edges.union(edges)
-        new_nodes = self.getNodesFromEdges(edges)
-        self.nodes = self.nodes.union(new_nodes)
+    name = "Directional Graph"
+    directional = True
 
-    def addEdge(self, edge):
-        self.addEdgeSet(set([edge]))
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-    def sethead(self, new_head: Node):
-        if new_head and new_head not in self.nodes:
-            self.addNode(new_head)
-        self._head = new_head
+    def add_edge(self, n1, n2, edge=1):
+        n1, n2 = self.get_index(n1), self.get_index(n2)
+        self._upde(n1, n2, edge)
 
-    def getHead(self):
-        return self._head
+    def remove_edge(self, n1, n2, edge=0):
+        self.add_edge(n1, n2, edge)
 
-    def hasNode(self, node: Node) -> bool:
-        return node in self.nodes
 
-    def hasNodes(self, nodes) -> bool:
-        return all([self.hasNode(node) for node in nodes])
+class NonDirectionalGraph(DirectionalGraph):
 
-    def getAdjacentNodes(self, node: Node):
-        edges = node.getAdjacentEdges()
-        adjacent_nodes = set()
-        for edge in edges:
-            adjacent_nodes = adjacent_nodes.union(edge.nodes)
-        adjacent_nodes.remove(node)
-        return adjacent_nodes
+    name = "Non-Directional Graph"
+    directional = False
 
-    def getOutboundAdjacentNodes(self, node: Node):
-        edges = node.getAdjacentEdges()
-        outbound_adjacent_nodes = set()
-        for edge in edges:
-            outbound_adjacent_nodes = outbound_adjacent_nodes.union(edge.getDestinies())
-        if node in outbound_adjacent_nodes:
-            outbound_adjacent_nodes.remove(node)
-        return outbound_adjacent_nodes
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-    def getInBoundAdjacentNodes(self, node: Node):
-        edges = node.getAdjacentEdges()
-        in_bound_adjacent_nodes = set()
-        for edge in edges:
-            in_bound_adjacent_nodes = in_bound_adjacent_nodes.union(edge.get_genisises())
-        if node in in_bound_adjacent_nodes:
-            in_bound_adjacent_nodes.remove(node)
-        return in_bound_adjacent_nodes
+    def add_edge(self, n1, n2, edge=1):
+        super().add_edge(n1, n2, edge)
+        super().add_edge(n2, n1, edge)
 
-    def markNodes(self, nodes, flag_name: str):
-        for node in nodes:
-            node.flag = flag_name
+    def _calc_from_adjs(self, node, adjs=None, adj_rule=None):
+        """only call this after _calc_to_adjs"""
+        node_i = self.get_index(node)
+        return np.concatenate(self.adjs[node_i], adj_rule(node, node))
 
-    def markNode(self, node: Node, flag_name: str):
-        self.markNodes(set([node]), flag_name)
 
-    def resetNodes(self, nodes):
-        self.markNodes(nodes, flag_name=None)
+class DirectionalWeightedGraph(DirectionalGraph):
 
-    def resetNode(self, node: Node):
-        self.markNode(node, flag=None)
+    name = "Directional Weighted Graph"
+    weighted = True
 
-    # def get_adj_nodes_with_criteria(self,node, criteria:function):
-    #     pass
+    def __init__(self, weights=None, *args, **kwargs):
+        super().__init__(weights, depth=2, *args, **kwargs)
+        if weights is not None:
+            self.adjs[:, :, 1] = weights
 
-    def getAdjacentNodesWithFlag(self, node: Node, flag_name: str):
-        return set([node for node in self.getAdjacentNodes(node) if node.flag == flag_name])
+    def _updw(self, n1, n2, weight):
+        self.adjs[n1, n2, 1] = weight
 
-    def getAdjacentNodesWithoutFlag(self, node: Node, flag_name: str):
-        return set([node for node in self.getAdjacentNodes(node) if node.flag != flag_name])
+    def add_edge(self, n1, n2, weight=1, edge=1):
+        super().add_edge(n1, n2, edge=[edge, weight])
 
-    def getOutboundAdjacentNodesWithFlag(self, node: Node, flag_name: str):
-        return set([node for node in self.getOutboundAdjacentNodes(node) if node.flag == flag_name])
 
-    def getOutboundAdjacentNodesWithoutFlag(self, node: Node, flag_name: str):
-        return set([node for node in self.getOutboundAdjacentNodes(node) if node.flag != flag_name])
+class NonDirectionalWeightedGraph(DirectionalWeightedGraph):
 
-    def getInBoundAdjacentNodesWithFlag(self, node: Node, flag_name: str):
-        return set([node for node in self.getInBoundAdjacentNodes(node) if node.flag == flag_name])
+    name = "Non-Directional Weighted Graph"
+    weighted = True
 
-    def getInBoundAdjacentNodesWithoutFlag(self, node: Node, flag_name: str):
-        return set([node for node in self.getInBoundAdjacentNodes(node) if node.flag != flag_name])
+    def __init__(self, weights=None, *args, **kwargs):
+        super().__init__(weights, *args, **kwargs)
 
-    def getAllConnectedNodes(self, node):
-        self.resetNodes(self.nodes)
+    def _updw(self, n1, n2, weight):
+        super()._updw(n1, n2, weight)
+        super()._updw(n2, n1, weight)
 
-        def exploreDeep(node, node_set):
-            to_explore = self.getAdjacentNodesWithoutFlag(node, "EXPLORED")
-            self.markNodes(to_explore, "EXPLORED")
-            node_set.add(node)
-            for new_node in to_explore:
-                node_set = node_set.union(exploreDeep(new_node, node_set))
-            return node_set
+    def add_edge(self, n1, n2, weight=1, edge=1):
+        super().add_edge(n1, n2, weight, edge)
+        super().add_edge(n2, n1, weight, edge)
 
-        all_connected_nodes = exploreDeep(node, set([node]))
-        return all_connected_nodes
 
-    def connectionExists(self, node0, node1):
-        return node0 in self.getAllConnectedNodes(node1)
+class Graph(DirectionalWeightedGraph):
+    """this is the most common graph"""
 
-    def getAllDirectionallyConnectedNodes(self, node):
-        self.resetNodes(self.nodes)
-
-        def exploreDeep(node, node_set):
-            to_explore = self.getOutboundAdjacentNodesWithoutFlag(node, "EXPLORED")
-            self.markNodes(to_explore, "EXPLORED")
-            node_set.add(node)
-            for new_node in to_explore:
-                node_set = node_set.union(exploreDeep(new_node, node_set))
-            return node_set
-
-        all_connected_nodes = exploreDeep(node, set([node]))
-        return all_connected_nodes
-
-    def getAllDirectionallyConnectedEdges(self, node):
-        edges = set()
-        for n in self.getAllDirectionallyConnectedNodes(node):
-            edges = edges.union(n.outbound)
-        return edges
-
-    def directionalConnectionExists(self, startnode, endnode):
-        return endnode in self.getAllDirectionallyConnectedNodes(startnode)
-
-    def shortestPathDirectional(self, n0, n1):
-        # returns distance, and path
-        size = len(self)
-        connected_nodes = self.getAllDirectionallyConnectedNodes(n0)
-        if n1 not in connected_nodes:
-            raise Exception("NO PATH EXISTS")
-        for node in connected_nodes:
-            node.flag = "UNSEEN"
-            node.distance = float("inf")
-        n0.distance = 0
-
-        current_node = n0
-
-        searched = 0
-        while current_node is not n1:
-            searched += 1
-            print(f"searching {searched}/{size}", end="\r")
-            current_node.flag = "VISITED"
-            adjacent_nodes = self.getOutboundAdjacentNodes(current_node)
-            adjacent_nodes = [node for node in adjacent_nodes if node.flag != "VISITED"]
-            for n in adjacent_nodes:
-                relevant_edges = [
-                    edge
-                    for edge in self.edges
-                    if edge.doesDirectionallyConnectNodes(current_node, n)
-                ]
-                new_distance = current_node.distance + min([edge.length for edge in relevant_edges])
-                n.distance = (
-                    new_distance if n.distance == float("inf") else min(n.distance, new_distance)
-                )
-                if new_distance == n.distance:
-                    n.path_parent = current_node
-                    n.flag = "SEEN"
-            next_node = None
-            for node in connected_nodes:
-                if node.flag == "SEEN":
-                    next_node = (
-                        node
-                        if next_node is None
-                        else (next_node if next_node.distance <= node.distance else node)
-                    )
-            current_node = next_node
-
-        end_node = current_node
-        path = [end_node]
-        while current_node is not n0:
-            current_node = current_node.path_parent
-            path.append(current_node)
-        path.reverse()
-
-        return end_node.distance, path
-
-    def getSubgraph(self, nodes=None, edges=None):
-        if not (nodes or edges):
-            return Graph()
-        if nodes:
-            return Graph(nodes=nodes)
-        if edges:
-            nodes = set()
-            for edge in edges:
-                nodes.add(edge.node0)
-                nodes.add(edge.node1)
-            return Graph(nodes=nodes)
-
-    def findCliques(self, size: int):
-        """returns the cliques (subgraph will all interconnected nodes)
-        of given size"""
-        cliques = []
-        if len(self) < size:
-            return cliques
-        if size == 2:
-            # find all pairs in graph
-            for edge in self.edges:
-                cliques.append(set([edge.node0, edge.node1]))
-        else:
-            untested = set(self.nodes)
-            for node in self.nodes:
-                nodes = set()
-                for edge in node.getAdjacentEdges():
-                    nodes = nodes.union(set(node for node in edge.nodes if node in untested))
-                untested.remove(node)
-                if nodes:
-                    nodes.remove(node)
-                edges = set()
-                for n in nodes:
-                    for edge in n.getAdjacentEdges():
-                        if (edge.node0 in nodes) and (edge.node1 in nodes):
-                            edges.add(edge)
-                local_graph = Graph(nodes=nodes, edges=edges)
-                new_cliques = local_graph.findCliques(size=size - 1)
-                for clique in new_cliques:
-                    clique.add(node)
-                    cliques.append(clique)
-        return cliques
+    name = "Graph"

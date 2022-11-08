@@ -1,30 +1,32 @@
 """
-Path sum: two ways
-Problem 81
+Path sum: four ways
+Problem 83
 
-In the 5 by 5 matrix below, the minimal path sum from the top left to the bottom right, 
-by only moving to the right and down, is indicated in bold red [surrounded by underscores]
-and is equal to 2427.
+NOTE: This problem is a significantly more challenging version of Problem 81.
+
+In the 5 by 5 matrix below, the minimal path sum from the top left to the bottom right,
+by moving left, right, up, and down, is indicated in bold red [surrounded by underscores] and is equal to 2297.
+
 
 [
-    [_131_  673   234   103    18 ],
-    [_201_  _96_ _342_  965   150 ],
-    [ 630   803  _746_ _422_  111 ],
+    [_131_  673  _234_ _103_  _18_],
+    [_201_  _96_ _342_  965  _150_],
+    [ 630   803   746  _422_ _111_],
     [ 537   699   497  _121_  956 ],
     [ 805   732   524   _37_ _331_],
 ]
 
-Find the minimal path sum from the top left to the bottom right by only moving right
-and down in matrix.txt (right click and "Save Link/Target As..."), a 31K text file 
+Find the minimal path sum from the top left to the bottom right by moving left, right,
+up, and down in matrix.txt (right click and "Save Link/Target As..."), a 31K text file
 containing an 80 by 80 matrix.
 
-Link: https://projecteuler.net/problem=81
+Link: https://projecteuler.net/problem=83
 
 Date solved:  
-10/28/2022
+11/08/2022
 """
 
-ANSWER = 0
+ANSWER = 425185
 
 # imports
 
@@ -37,15 +39,15 @@ import numpy as np
 with open(auto_get_problem_file(), "r") as f:
     array = np.array(read_file_as_array(f))
 
-array = np.array(
-    [
-        [131, 673, 234, 103, 18],
-        [201, 96, 342, 965, 150],
-        [630, 803, 746, 422, 111],
-        [537, 699, 497, 121, 956],
-        [805, 732, 524, 37, 331],
-    ]
-)
+# array = np.array(
+#     [
+#         [131, 673, 234, 103, 18],
+#         [201, 96, 342, 965, 150],
+#         [630, 803, 746, 422, 111],
+#         [537, 699, 497, 121, 956],
+#         [805, 732, 524, 37, 331],
+#     ]
+# )
 
 
 def setup_graph(array):
@@ -62,18 +64,16 @@ def setup_graph(array):
         row = i // n  # row
         if row != n - 1:
             adjs[i, i + n] = [1, array[row + 1, col]]
-            adjs[i + n, i] = [1, array[row + 1, col]]
+            adjs[i + n, i] = [1, array[row, col]]
         if col != n - 1:
             adjs[i, i + 1] = [1, array[row, col + 1]]
-            adjs[i + 1, i] = [1, array[row, col + 1]]
-
+            adjs[i + 1, i] = [1, array[row, col]]
     return Graph(nodes=nodes, adjs=adjs)
 
 
 def solution():
     graph = setup_graph(array)
     dist, path = graph.lowest_cost_path(graph.nodes[-1], graph.nodes[-2])
-    print(path)
     return int(dist)
 
 

@@ -175,7 +175,7 @@ class BaseGraph(Set):
         if adjs is not None:
             return adjs
         return (
-            np.zeros(len(self.nodes))
+            np.zeros((self.adjs[0].shape[0] + 1,) + tuple(self.adjs[0].shape[1:]))
             if adj_rule is None
             else self.apply_rule_to_all(node, adj_rule)
         )
@@ -184,7 +184,7 @@ class BaseGraph(Set):
         if adjs is not None:
             return adjs
         return (
-            np.zeros(len(self.nodes))
+            np.zeros((self.adjs[0].shape[0] + 1,) + tuple(self.adjs[0].shape[1:]))
             if adj_rule is None
             else self.apply_rule_from_all(node, adj_rule)
         )
@@ -278,7 +278,7 @@ class DirectionalWeightedGraph(DirectionalGraph):
         visited = 0
         while ci != ei:
             visited += 1
-            print("visited", visited, end="\r")
+            print("visited", visited, ci, end="\r")
             cn.flag = "visited"
             adjs = graph.adjs[ci]
             adjs_i = np.where(adjs[:, 0])[0]
@@ -303,6 +303,7 @@ class DirectionalWeightedGraph(DirectionalGraph):
                         nn = n
                         ni = i
             cn, ci = nn, ni
+        print("total visited", visited, "of", len(self.nodes), end="\n")
 
         end_node = cn
         path = [end_node]

@@ -23,7 +23,7 @@ class Set:
         for key in kwargs:
             setattr(self, key, kwargs[key])
 
-    def __gt__(self, other) -> bool:
+    def __gt__(self, other) -> bool: # This makes no sense. Compare cardinalities or nothing
         if not self.ordered:
             raise TypeError(f"{self.name} is not an ordered set")
         return self.comparitor > other.comparitor
